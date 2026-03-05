@@ -3,646 +3,669 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>마이페이지 · 음식 룰렛 (Web Prototype)</title>
+  <title>마이페이지 · 음식룰렛 (UT Prototype)</title>
   <style>
     :root{
-      --mint:#2AC1BC;
-      --sky:#6ED3E8;
-      --sky2:#AEEAF4;
-      --bg:#F6F7F9;
+      --bg:#F3F4F6;
+      --card:#fff;
       --text:#111827;
       --muted:#6B7280;
-      --card:#ffffff;
-      --line:#E5E7EB;
-      --shadow: 0 10px 24px rgba(0,0,0,.08);
-      --shadow2: 0 6px 18px rgba(0,0,0,.06);
-      --radius: 18px;
+      --line:rgba(0,0,0,.06);
+
+      --mint:#2AC1BC;
+
+      --gold:#B9852B;
+      --gold2:#F4C542;
+      --shadow:0 12px 26px rgba(0,0,0,.10);
+      --shadow2:0 8px 18px rgba(0,0,0,.08);
+      --radius:16px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
-      background:var(--bg);
+      background:#fff;
       color:var(--text);
     }
     .app{
-      max-width: 420px;
-      margin: 0 auto;
-      min-height: 100vh;
-      padding-bottom: 82px; /* tabbar space */
+      width:min(390px, 100%);
+      margin:0 auto;
+      background:var(--bg);
+      min-height:100vh;
+      padding-bottom:88px;
     }
 
-    /* Top */
-    .top{
-      padding: 16px 16px 12px;
-      background: linear-gradient(180deg, rgba(42,193,188,.12), rgba(42,193,188,0));
-      position: sticky;
-      top:0;
-      backdrop-filter: blur(10px);
-      z-index:10;
-    }
-    .top-row{
+    /* header */
+    .header{
+      padding:14px 16px 8px;
       display:flex; align-items:center; justify-content:space-between;
-      gap:12px;
     }
-    .title{
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      font-size: 18px;
+    .h-title{font-size:18px; font-weight:900; letter-spacing:-.03em;}
+    .h-icons{display:flex; gap:10px;}
+    .h-dot{width:18px;height:18px;border-radius:999px;background:rgba(0,0,0,.22);opacity:.35;}
+
+    /* search pill */
+    .search{
+      margin:0 16px 10px;
+      padding:10px 12px;
+      background:rgba(0,0,0,.06);
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      display:flex; align-items:center; justify-content:space-between;
+      color:#374151;
     }
-    .pill{
-      display:flex; gap:8px; align-items:center;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background:#fff;
-      border:1px solid var(--line);
-      box-shadow: var(--shadow2);
-      flex:1;
+    .search .chev{opacity:.55}
+
+    /* roulette block */
+    .rouletteArea{
+      margin:0 16px 10px;
+      position:relative;
     }
-    .pill input{
-      border:none; outline:none; width:100%;
-      font-size: 14px;
-      background: transparent;
+    .stepNo{
+      position:absolute; left:0; top:0;
+      font-size:22px; font-weight:900;
     }
-    .icon-btn{
-      width: 42px; height: 42px;
-      border-radius: 12px;
-      border:1px solid var(--line);
-      background:#fff;
-      box-shadow: var(--shadow2);
-      cursor:pointer;
-      display:grid; place-items:center;
-      user-select:none;
+    .wheelWrap{
+      display:flex; justify-content:center; align-items:center;
+      position:relative;
+      margin-top:8px;
+    }
+    canvas{
+      width:290px; height:290px;
+      display:block;
+      filter: drop-shadow(0 18px 22px rgba(0,0,0,.12));
     }
 
-    /* Profile card */
-    .profile{
-      margin: 10px 16px 14px;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow2);
+    /* ring */
+    .ring{
+      position:absolute;
+      width:312px; height:312px;
+      border-radius:999px;
+      border:10px solid var(--gold);
+      box-shadow: 0 10px 18px rgba(0,0,0,.10) inset;
+      pointer-events:none;
+    }
+    .bulbs{
+      position:absolute;
+      width:312px;height:312px;border-radius:999px;
+      pointer-events:none;
+    }
+    .bulb{
+      position:absolute;
+      width:10px;height:10px;border-radius:999px;
+      background:#fff;
+      box-shadow:0 0 10px rgba(255,255,255,.65);
+      opacity:.85;
+    }
+
+    /* center image */
+    .centerImg{
+      position:absolute;
+      width:86px;height:86px;border-radius:999px;
+      background:#fff;
+      border:6px solid #fff;
+      box-shadow:var(--shadow2);
       overflow:hidden;
-      position: relative;
-    }
-    .profile-head{
-      padding: 14px 14px 0;
-      display:flex; align-items:center; justify-content:space-between;
-    }
-    .user{
-      display:flex; gap:10px; align-items:center;
-    }
-    .avatar{
-      width:44px; height:44px; border-radius: 14px;
-      background: linear-gradient(135deg, rgba(42,193,188,.25), rgba(110,211,232,.25));
-      border:1px solid rgba(42,193,188,.25);
+      z-index:3;
       display:grid; place-items:center;
-      font-weight: 900;
-      color:#0f766e;
     }
-    .user .meta{
-      display:flex; flex-direction:column; gap:2px;
+    .centerImg img{
+      width:100%;height:100%;
+      object-fit:cover;
+      display:block;
     }
-    .user .name{ font-weight: 800; letter-spacing:-0.02em;}
-    .user .sub{ font-size:12px; color: var(--muted);}
 
-    /* Roulette block */
-    .roulette-wrap{
-      padding: 10px 14px 14px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
+    /* sparkles */
+    .spark{
+      position:absolute;
+      width:12px;height:12px;
+      background:#111827;
+      border-radius:4px;
+      transform:rotate(45deg);
+      opacity:.9;
+      z-index:4;
     }
-    .roulette-card{
-      background: linear-gradient(180deg, rgba(110,211,232,.14), rgba(110,211,232,0));
-      border:1px solid rgba(110,211,232,.25);
-      border-radius: 16px;
-      padding: 14px;
-      position: relative;
+    .spark.s1{left:66px; top:122px}
+    .spark.s2{right:66px; top:144px; transform:rotate(18deg)}
+
+    /* thought bubble (emoji result) */
+    .bubble{
+      position:absolute;
+      right:18px; top:70px;
+      width:96px;height:62px;
+      background:#fff;
+      border-radius:999px;
+      box-shadow:var(--shadow2);
+      display:flex; align-items:center; justify-content:center;
+      font-size:26px;
+      z-index:5;
     }
-    .roulette-top{
-      display:flex; align-items:flex-end; justify-content:space-between;
-      gap:10px;
-      margin-bottom: 12px;
+    .bubble:after{
+      content:"";
+      position:absolute;
+      left:14px;
+      bottom:-10px;
+      width:18px;height:18px;
+      background:#fff;
+      transform:rotate(45deg);
+      border-radius:4px;
+      box-shadow:var(--shadow2);
     }
-    .roulette-top .h1{
-      font-weight: 900;
-      letter-spacing:-0.03em;
-      font-size: 16px;
+
+    /* right hint */
+    .rightHint{
+      position:absolute;
+      right:0; top:205px;
+      width:90px;
+      text-align:center;
+      font-size:12px;
+      font-weight:900;
       line-height:1.2;
     }
-    .roulette-top .desc{
-      font-size: 12px;
-      color: var(--muted);
-      margin-top:4px;
+    .arrow{
+      margin:6px auto 0;
+      width:0;height:0;
+      border-left:10px solid transparent;
+      border-right:10px solid transparent;
+      border-top:14px solid #EF4444;
     }
-    .spin-btn{
-      border:none;
-      cursor:pointer;
-      background: var(--mint);
-      color:#fff;
-      font-weight: 800;
-      padding: 10px 12px;
-      border-radius: 12px;
-      box-shadow: 0 10px 16px rgba(42,193,188,.22);
-      white-space:nowrap;
-    }
-    .spin-btn:active{ transform: translateY(1px); }
 
-    .roulette-stage{
+    /* button row */
+    .btnRow{
+      margin:8px 16px 8px;
       display:grid;
-      place-items:center;
-      position: relative;
-      padding: 6px 0 2px;
+      grid-template-columns: 1fr 1fr 46px;
+      gap:10px;
+      align-items:stretch;
     }
-
-    /* Pointer */
-    .pointer{
-      position:absolute;
-      top: 2px;
-      width: 0; height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 16px solid #F4C542; /* yellow */
-      filter: drop-shadow(0 6px 6px rgba(0,0,0,.12));
-      z-index: 5;
-    }
-
-    /* Canvas */
-    canvas{
-      width: 290px;
-      height: 290px;
-      max-width: 100%;
-      display:block;
-      filter: drop-shadow(0 16px 22px rgba(0,0,0,.10));
-    }
-
-    /* Center badge */
-    .center-badge{
-      position:absolute;
-      width: 78px; height: 78px;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,.06);
-      box-shadow: var(--shadow2);
-      display:grid; place-items:center;
-      font-weight: 900;
-      color:#111827;
-      z-index: 4;
-    }
-    .center-badge span{
-      display:block;
+    .boxBtn{
+      background:#FDE68A;
+      border:2px solid var(--gold);
+      border-radius:10px;
+      box-shadow:0 6px 0 rgba(0,0,0,.08);
+      padding:10px;
+      font-weight:900;
       font-size:12px;
-      color: var(--muted);
-      font-weight: 800;
-      margin-top:2px;
+      display:flex; align-items:center; justify-content:center;
+      text-align:center;
+      line-height:1.2;
+      color:#111827;
+      user-select:none;
+    }
+    .boxBtn.small{
+      justify-content:flex-start;
+      font-weight:800;
+      font-size:11px;
+      padding:8px 10px;
+    }
+    .gearBtn{
+      background:#FDE68A;
+      border:2px solid var(--gold);
+      border-radius:10px;
+      box-shadow:0 6px 0 rgba(0,0,0,.08);
+      display:grid; place-items:center;
+      cursor:pointer;
+      user-select:none;
+      overflow:hidden;
+    }
+    .gearBtn .inner{
+      width:28px;height:28px;border-radius:8px;
+      background:#EF4444;
+      color:#fff;
+      display:grid; place-items:center;
+      font-weight:900;
     }
 
-    /* Pop food */
-    .pop{
+    /* club card */
+    .club{
+      margin:0 16px 10px;
+      background:#fff;
+      border-radius:14px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow2);
+      padding:12px;
+    }
+    .club .title{display:flex; align-items:center; gap:8px; font-weight:900; font-size:13px;}
+    .mintDot{width:10px;height:10px;border-radius:999px;background:var(--mint);}
+    .club .desc{margin-top:6px;font-size:12px;font-weight:800;color:#0EA5A4;}
+
+    /* list rows (쿠폰함/선물함/배민페이) */
+    .list{
+      margin:0 16px;
+      background:#fff;
+      border-radius:14px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow2);
+      overflow:hidden;
+    }
+    .li{
+      padding:14px 12px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-top:1px solid var(--line);
+      gap:10px;
+      font-size:13px;
+      font-weight:900;
+    }
+    .li:first-child{border-top:none}
+    .li .left{display:flex; align-items:center; gap:10px;}
+    .bDot{width:10px;height:10px;border-radius:999px;background:#111827;}
+    .bDot.purple{background:#7C3AED}
+    .bDot.yellow{background:#F59E0B}
+    .li .right{opacity:.9}
+
+    /* section list */
+    .section{
+      margin:12px 16px 0;
+      background:#fff;
+      border-radius:14px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow2);
+      overflow:hidden;
+    }
+    .secRow{
+      padding:13px 12px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-top:1px solid var(--line);
+      font-weight:900;
+      font-size:13px;
+    }
+    .secRow:first-child{border-top:none}
+    .secLeft{display:flex; align-items:center; gap:10px;}
+    .circle{
+      width:14px;height:14px;border-radius:999px;
+      border:2px solid #111827;
+      background:#fff;
+    }
+    .chev{opacity:.5}
+
+    /* banner (no external image) */
+    .banner{
+      margin:12px 16px 0;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow2);
+      background: linear-gradient(90deg,#FF7A00,#FF3D00);
+      color:#fff;
+      padding:16px 14px;
+      position:relative;
+    }
+    .banner .kicker{font-weight:900; font-size:12px; opacity:.92}
+    .banner .big{margin-top:6px; font-weight:900; font-size:20px; letter-spacing:-.02em}
+    .banner .btn{
+      display:inline-block;
+      margin-top:10px;
+      background:rgba(0,0,0,.55);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+    }
+    .banner:after{
+      content:"🍖";
       position:absolute;
-      bottom: 120px;
-      transform: translateY(18px) scale(.92);
-      opacity: 0;
-      pointer-events:none;
-      z-index: 6;
-      transition: transform .35s ease, opacity .25s ease;
+      right:14px; bottom:10px;
+      font-size:54px;
+      opacity:.9;
+      filter: drop-shadow(0 10px 12px rgba(0,0,0,.22));
+    }
+
+    /* mini grid */
+    .miniGrid{
+      margin:12px 16px 0;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+    }
+    .miniCard{
+      background:#fff;
+      border-radius:14px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow2);
+      padding:10px 8px;
       text-align:center;
     }
-    .pop.on{
-      opacity:1;
-      transform: translateY(0) scale(1);
-    }
-    .pop .emoji{
-      font-size: 44px;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
-    }
-    .pop .label{
-      margin-top: 6px;
+    .cap{
+      font-size:10px;
+      font-weight:900;
+      color:#6366F1;
+      background:rgba(99,102,241,.10);
+      border-radius:999px;
       display:inline-block;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-weight: 900;
-      font-size: 13px;
-      box-shadow: var(--shadow2);
+      padding:2px 6px;
+      margin-bottom:6px;
     }
+    .miniEmoji{
+      width:44px;height:44px;border-radius:16px;
+      margin:0 auto 6px;
+      background: linear-gradient(135deg, rgba(103,215,234,.35), rgba(42,193,188,.15));
+      display:grid; place-items:center;
+      font-size:24px;
+    }
+    .miniCard .t{font-size:12px;font-weight:900;letter-spacing:-.02em;}
+    .miniCard .s{font-size:11px;font-weight:800;color:var(--muted);margin-top:2px;}
 
-    /* Quick cards */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      padding: 0 16px 18px;
-    }
-    .mini{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius: 16px;
-      padding: 12px 10px;
-      box-shadow: var(--shadow2);
-    }
-    .mini .t{font-weight:900; font-size:13px; letter-spacing:-0.02em;}
-    .mini .s{color:var(--muted); font-size:12px; margin-top:4px;}
-
-    /* Promo */
-    .promo{
-      margin: 0 16px 16px;
-      background: #fff;
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding: 12px 14px;
-    }
-    .promo .left .t{font-weight:900; letter-spacing:-0.02em;}
-    .promo .left .s{font-size:12px; color:var(--muted); margin-top:4px;}
-    .promo .tag{
-      background: rgba(42,193,188,.14);
-      color:#0f766e;
-      font-weight: 900;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(42,193,188,.24);
-      white-space: nowrap;
-    }
-
-    /* Tab bar */
+    /* bottom tab */
     .tabbar{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 10px;
-      width: min(420px, calc(100% - 18px));
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:10px;
+      width:min(390px, calc(100% - 18px));
       background:#fff;
+      border-radius:18px;
+      box-shadow:var(--shadow);
       border:1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      padding: 10px 10px;
+      padding:10px 10px;
       display:grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      z-index: 99;
+      gap:6px;
+      z-index:99;
     }
     .tab{
-      display:grid;
-      place-items:center;
-      gap:4px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
+      display:grid; place-items:center; gap:4px;
+      font-size:11px; font-weight:900;
+      color:#6B7280;
       user-select:none;
     }
     .tab .dot{
-      width: 28px; height: 28px;
-      border-radius: 10px;
-      background: rgba(17,24,39,.05);
+      width:28px;height:28px;border-radius:10px;
+      background:rgba(17,24,39,.06);
       display:grid; place-items:center;
-      font-size: 14px;
+      font-size:14px;
     }
-    .tab.active{ color: var(--mint); }
+    .tab.active{color:#111827}
     .tab.active .dot{
-      background: rgba(42,193,188,.14);
-      border: 1px solid rgba(42,193,188,.22);
+      background: rgba(42,193,188,.16);
+      border:1px solid rgba(42,193,188,.22);
     }
 
-    /* Small note */
-    .note{
-      padding: 0 16px 20px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
+    /* upload (hidden but usable) */
+    .upload{
+      margin:10px 16px 0;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
     }
+    .upload input{max-width:220px;}
+    .tiny{opacity:.8;font-weight:800;}
   </style>
 </head>
+
 <body>
   <div class="app">
-    <div class="top">
-      <div class="top-row">
-        <div class="title">마이페이지</div>
-        <div class="icon-btn" title="알림">🔔</div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="pill" aria-label="검색">
-        <span style="font-size:14px">🔎</span>
-        <input placeholder="가게/메뉴 검색" />
+    <div class="header">
+      <div class="h-title">마이배민</div>
+      <div class="h-icons" aria-hidden="true">
+        <div class="h-dot"></div>
+        <div class="h-dot"></div>
       </div>
     </div>
 
-    <section class="profile">
-      <div class="profile-head">
-        <div class="user">
-          <div class="avatar" aria-hidden="true">J</div>
-          <div class="meta">
-            <div class="name">지현님</div>
-            <div class="sub">포인트 · 쿠폰 · 내역을 한눈에</div>
-          </div>
+    <div class="search">
+      <div>배민의 음식주문 경험, 어떠셨나요?</div>
+      <div class="chev">›</div>
+    </div>
+
+    <div class="rouletteArea">
+      <div class="stepNo">1</div>
+
+      <div class="wheelWrap">
+        <canvas id="wheel" width="600" height="600" aria-label="음식 룰렛"></canvas>
+        <div class="ring" aria-hidden="true"></div>
+        <div class="bulbs" id="bulbs" aria-hidden="true"></div>
+
+        <!-- ✅ 내 이미지: 아래 업로드로 바꿀 수 있음 -->
+        <div class="centerImg" title="내 이미지">
+          <img id="myImg" alt="my image"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23fff'/><text x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-size='34' fill='%236b7280' font-family='Arial'>MY</text></svg>">
         </div>
-        <button class="icon-btn" title="설정">⚙️</button>
+
+        <div class="spark s1" aria-hidden="true"></div>
+        <div class="spark s2" aria-hidden="true"></div>
+
+        <div class="bubble" id="bubble" title="결과">🍗</div>
       </div>
 
-      <div class="roulette-wrap">
-        <div class="roulette-card">
-          <div class="roulette-top">
-            <div>
-              <div class="h1">뭘 먹을까? 🎲</div>
-              <div class="desc">룰렛을 돌리면 메뉴가 뿅! 떠올라요</div>
-            </div>
-            <button class="spin-btn" id="spinBtn">룰렛 돌리기</button>
-          </div>
-
-          <div class="roulette-stage">
-            <div class="pointer" aria-hidden="true"></div>
-            <canvas id="wheel" width="580" height="580" aria-label="음식 룰렛"></canvas>
-
-            <div class="center-badge" aria-hidden="true">
-              룰렛
-              <span>tap</span>
-            </div>
-
-            <div class="pop" id="pop">
-              <div class="emoji" id="popEmoji">🍗</div>
-              <div class="label" id="popLabel">치킨</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="grid">
-      <div class="mini">
-        <div class="t">포인트</div>
-        <div class="s">0P</div>
-      </div>
-      <div class="mini">
-        <div class="t">쿠폰</div>
-        <div class="s">2장</div>
-      </div>
-      <div class="mini">
-        <div class="t">선물함</div>
-        <div class="s">0개</div>
+      <div class="rightHint">
+        지금 땡기는<br/>메뉴는?
+        <div class="arrow" aria-hidden="true"></div>
       </div>
     </div>
 
-    <div class="promo">
-      <div class="left">
-        <div class="t">오늘만 할인</div>
-        <div class="s">추천 메뉴로 빠르게 골라봐요</div>
+    <div class="btnRow">
+      <div class="boxBtn small">Lv.37 골라먹기<br/>냉삼곱쌈</div>
+      <div class="boxBtn">맞춤형 메뉴 배치</div>
+      <div class="gearBtn" id="gearBtn" title="룰렛 돌리기">
+        <div class="inner">⚙️</div>
       </div>
-      <div class="tag">최대 3천원</div>
     </div>
 
-    <div class="note">
-      * 과제/포트폴리오용 프로토타입입니다. 실제 서비스 UI와 동일하지 않으며, 룰렛은 메뉴 선택 피로를 줄이는 인터랙션 컨셉을 검증하기 위한 예시입니다.
+    <!-- 내 이미지 업로드(압축/파일 없이 해결) -->
+    <div class="upload">
+      <div class="tiny">내 이미지 넣기</div>
+      <input id="imgInput" type="file" accept="image/*" />
+    </div>
+
+    <div class="club">
+      <div class="title"><span class="mintDot"></span>배민클럽 이용중</div>
+      <div class="desc">스타벅스 아메리카노 + 처갓집양념치킨 쿠폰 받아요!</div>
+    </div>
+
+    <div class="list">
+      <div class="li">
+        <div class="left"><span class="bDot purple"></span>쿠폰함</div>
+        <div class="right">10장 ›</div>
+      </div>
+      <div class="li">
+        <div class="left"><span class="bDot"></span>선물함</div>
+        <div class="right">0원 ›</div>
+      </div>
+      <div class="li">
+        <div class="left"><span class="bDot yellow"></span>배민페이</div>
+        <div class="right">등록하기 ›</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>진행중인 이벤트</div><div class="chev">›</div></div>
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>혜택 모아보기</div><div class="chev">›</div></div>
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>배민클럽</div><div class="chev">›</div></div>
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>가족계정</div><div class="chev">›</div></div>
+    </div>
+
+    <div class="banner">
+      <div class="kicker">328회 칼질로 육즙 가득</div>
+      <div class="big">육식사관학교<br/>최대 6,000원 할인</div>
+      <div class="btn">즉시할인받기 ›</div>
+    </div>
+
+    <div class="section">
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>진행중인 이벤트</div><div class="chev">›</div></div>
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>혜택 모아보기</div><div class="chev">›</div></div>
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>배민 신한카드 발친구</div><div class="chev">›</div></div>
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>샌드위치 쌓고 혜택 받기</div><div class="chev">›</div></div>
+    </div>
+
+    <div class="miniGrid">
+      <div class="miniCard"><div class="cap">최대 70만원</div><div class="miniEmoji">🎧</div><div class="t">배민리서치</div><div class="s">리서치 참여해요</div></div>
+      <div class="miniCard"><div class="cap">최대 70만원</div><div class="miniEmoji">🎁</div><div class="t">배민리서치</div><div class="s">리서치 참여해요</div></div>
+      <div class="miniCard"><div class="cap">최대 70만원</div><div class="miniEmoji">📣</div><div class="t">배민리서치</div><div class="s">리서치 참여해요</div></div>
+      <div class="miniCard"><div class="cap">최대 70만원</div><div class="miniEmoji">🙂</div><div class="t">배민리서치</div><div class="s">리서치 참여해요</div></div>
+
+      <div class="miniCard"><div class="cap">최대 70만원</div><div class="miniEmoji">⚽</div><div class="t">배민리서치</div><div class="s">리서치 참여해요</div></div>
+      <div class="miniCard"><div class="cap">최대 70만원</div><div class="miniEmoji">🍱</div><div class="t">배민리서치</div><div class="s">리서치 참여해요</div></div>
+      <div class="miniCard"><div class="cap">최대 70만원</div><div class="miniEmoji">🧾</div><div class="t">배민리서치</div><div class="s">리서치 참여해요</div></div>
+      <div class="miniCard"><div class="cap">최대 70만원</div><div class="miniEmoji">♾️</div><div class="t">배민리서치</div><div class="s">리서치 참여해요</div></div>
+    </div>
+
+    <div class="section" style="margin-bottom:14px;">
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>고객센터</div><div class="chev">›</div></div>
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>자주 묻는 질문</div><div class="chev">›</div></div>
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>공지사항</div><div class="chev">›</div></div>
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>약관 및 정책</div><div class="chev">›</div></div>
+      <div class="secRow"><div class="secLeft"><span class="circle"></span>현재 버전 1524.1</div><div class="chev">›</div></div>
     </div>
   </div>
 
-  <nav class="tabbar" aria-label="하단 탭바">
+  <nav class="tabbar" aria-label="하단 탭">
     <div class="tab"><div class="dot">🏠</div>홈</div>
-    <div class="tab"><div class="dot">🧺</div>장보기</div>
+    <div class="tab"><div class="dot">🧺</div>장보기·쇼핑</div>
+    <div class="tab"><div class="dot">♡</div>찜</div>
     <div class="tab"><div class="dot">🧾</div>주문내역</div>
-    <div class="tab active"><div class="dot">🙂</div>마이</div>
-    <div class="tab"><div class="dot">💬</div>문의</div>
+    <div class="tab active"><div class="dot">🙂</div>마이배민</div>
   </nav>
 
-  <script>
-    // ====== Roulette data (6 menus) ======
-    const menus = [
-      { label: "치킨", emoji: "🍗" },
-      { label: "피자", emoji: "🍕" },
-      { label: "떡볶이", emoji: "🍢" },
-      { label: "햄버거", emoji: "🍔" },
-      { label: "초밥", emoji: "🍣" },
-      { label: "국밥", emoji: "🍲" },
-    ];
+<script>
+  // 메뉴 6개 (이모지 고정)
+  const menus = [
+    { label:"치킨", emoji:"🍗" },
+    { label:"피자", emoji:"🍕" },
+    { label:"초밥", emoji:"🍣" },
+    { label:"버거", emoji:"🍔" },
+    { label:"떡볶이", emoji:"🍢" },
+    { label:"국밥", emoji:"🍲" },
+  ];
 
-    // ====== Draw wheel ======
-    const canvas = document.getElementById("wheel");
-    const ctx = canvas.getContext("2d");
+  const canvas = document.getElementById("wheel");
+  const ctx = canvas.getContext("2d");
+  const cx = canvas.width/2, cy = canvas.height/2;
+  const radius = 250;
 
-    const DPR = window.devicePixelRatio || 1;
-    function fitCanvas(){
-      // Keep internal size fixed for simplicity (already 580x580)
-      drawWheel(currentRotation);
-    }
+  const bubble = document.getElementById("bubble");
+  const gearBtn = document.getElementById("gearBtn");
 
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
-    const radius = 250;
+  // bulbs 생성
+  const bulbsEl = document.getElementById("bulbs");
+  const bulbCount = 28;
+  for(let i=0;i<bulbCount;i++){
+    const b=document.createElement("div");
+    b.className="bulb";
+    const ang=(i/bulbCount)*Math.PI*2;
+    const x=156 + Math.cos(ang)*132 - 5;
+    const y=156 + Math.sin(ang)*132 - 5;
+    b.style.left=x+"px";
+    b.style.top=y+"px";
+    b.style.opacity=(i%2?0.92:0.62);
+    bulbsEl.appendChild(b);
+  }
 
-    // Cute sky palette (alternating shades)
-    const sliceColors = ["#6ED3E8", "#AEEAF4"];
+  // 룰렛 그리기 (캡쳐처럼 흰 섹션 + 얇은 라인)
+  let spinning=false;
+  let currentRotation=0;
 
-    function drawWheel(rotationRad){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
+  function drawWheel(rot){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rot);
 
-      // outer shadow ring
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(rotationRad);
+    const slice=(Math.PI*2)/menus.length;
 
-      const slice = (Math.PI * 2) / menus.length;
+    for(let i=0;i<menus.length;i++){
+      const start=i*slice, end=start+slice;
 
-      for(let i=0; i<menus.length; i++){
-        const start = i * slice;
-        const end = start + slice;
-
-        // slice
-        ctx.beginPath();
-        ctx.moveTo(0,0);
-        ctx.arc(0,0,radius,start,end);
-        ctx.closePath();
-        ctx.fillStyle = sliceColors[i%2];
-        ctx.fill();
-
-        // slice border
-        ctx.lineWidth = 6;
-        ctx.strokeStyle = "rgba(255,255,255,.85)";
-        ctx.stroke();
-
-        // label + emoji
-        const mid = start + slice/2;
-        ctx.save();
-        ctx.rotate(mid);
-
-        // emoji
-        ctx.font = "900 44px system-ui, Apple Color Emoji, Segoe UI Emoji";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(menus[i].emoji, radius * 0.62, 0);
-
-        // label pill
-        const text = menus[i].label;
-        ctx.font = "900 20px system-ui, -apple-system, 'Noto Sans KR', sans-serif";
-        const w = ctx.measureText(text).width;
-        const pillW = w + 26, pillH = 34;
-        const px = radius * 0.62;
-        const py = 44;
-
-        // pill background
-        ctx.fillStyle = "rgba(255,255,255,.92)";
-        roundRect(ctx, px - pillW/2, py - pillH/2, pillW, pillH, 999);
-        ctx.fill();
-
-        // pill stroke
-        ctx.strokeStyle = "rgba(0,0,0,.06)";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // pill text
-        ctx.fillStyle = "rgba(17,24,39,.92)";
-        ctx.fillText(text, px, py+1);
-
-        ctx.restore();
-      }
-
-      // inner highlight ring
       ctx.beginPath();
-      ctx.arc(0,0,radius-8,0,Math.PI*2);
-      ctx.lineWidth = 10;
-      ctx.strokeStyle = "rgba(207,246,255,.9)";
+      ctx.moveTo(0,0);
+      ctx.arc(0,0,radius,start,end);
+      ctx.closePath();
+      ctx.fillStyle = (i%2===0) ? "#FFFFFF" : "#F7F7F7";
+      ctx.fill();
+
+      ctx.lineWidth=4;
+      ctx.strokeStyle="rgba(0,0,0,.10)";
       ctx.stroke();
 
-      ctx.restore();
-
-      // center dot (cute)
+      const mid=start+slice/2;
       ctx.save();
-      ctx.translate(cx, cy);
-      ctx.beginPath();
-      ctx.arc(0,0,10,0,Math.PI*2);
-      ctx.fillStyle = "rgba(17,24,39,.08)";
-      ctx.fill();
+      ctx.rotate(mid);
+
+      // emoji
+      ctx.font="900 44px system-ui, Apple Color Emoji, Segoe UI Emoji";
+      ctx.textAlign="center";
+      ctx.textBaseline="middle";
+      ctx.fillText(menus[i].emoji, radius*0.60, 0);
+
       ctx.restore();
     }
 
-    function roundRect(ctx, x, y, w, h, r){
-      const rr = Math.min(r, w/2, h/2);
-      ctx.beginPath();
-      ctx.moveTo(x+rr, y);
-      ctx.arcTo(x+w, y, x+w, y+h, rr);
-      ctx.arcTo(x+w, y+h, x, y+h, rr);
-      ctx.arcTo(x, y+h, x, y, rr);
-      ctx.arcTo(x, y, x+w, y, rr);
-      ctx.closePath();
-    }
+    // inner ring
+    ctx.beginPath();
+    ctx.arc(0,0,radius-8,0,Math.PI*2);
+    ctx.lineWidth=10;
+    ctx.strokeStyle="rgba(0,0,0,.12)";
+    ctx.stroke();
 
-    // ====== Spin logic ======
-    let spinning = false;
-    let currentRotation = 0; // radians
+    ctx.restore();
+  }
 
-    const spinBtn = document.getElementById("spinBtn");
-    const pop = document.getElementById("pop");
-    const popEmoji = document.getElementById("popEmoji");
-    const popLabel = document.getElementById("popLabel");
+  function pickIndex(rot){
+    const slice=(Math.PI*2)/menus.length;
+    const pointerAngle=Math.PI*1.5; // top
+    const angle=(pointerAngle - (rot%(Math.PI*2)) + Math.PI*2)%(Math.PI*2);
+    return Math.floor(angle/slice)%menus.length;
+  }
 
-    function showPop(menu){
-      popEmoji.textContent = menu.emoji;
-      popLabel.textContent = menu.label;
-      pop.classList.remove("on");
-      // restart animation
-      requestAnimationFrame(()=> pop.classList.add("on"));
-      // hide after a bit
-      setTimeout(()=> pop.classList.remove("on"), 1500);
-    }
+  function spin(){
+    if(spinning) return;
+    spinning=true;
 
-    function pickIndexFromRotation(rot){
-      // Pointer is at top (angle -90deg in canvas coordinates).
-      // Our slices start at 0 rad to the right; need mapping.
-      const slice = (Math.PI * 2) / menus.length;
-      // angle at pointer relative to wheel rotation
-      const pointerAngle = (Math.PI * 1.5); // 270deg (top) in standard unit circle
-      const angle = (pointerAngle - (rot % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
-      const index = Math.floor(angle / slice) % menus.length;
-      return index;
-    }
+    const targetIndex=Math.floor(Math.random()*menus.length);
+    const slice=(Math.PI*2)/menus.length;
+    const pointerAngle=Math.PI*1.5;
+    const targetCenter=(targetIndex+0.5)*slice;
 
-    function spin(){
-      if(spinning) return;
-      spinning = true;
-      spinBtn.disabled = true;
-      spinBtn.textContent = "돌리는 중…";
+    let desired=pointerAngle - targetCenter;
+    const base=currentRotation;
+    while(desired<base) desired += Math.PI*2;
 
-      // choose result index
-      const targetIndex = Math.floor(Math.random() * menus.length);
+    const spins=7;
+    const finalRot=desired + spins*Math.PI*2;
 
-      // calculate target rotation so that targetIndex lands at pointer
-      const slice = (Math.PI * 2) / menus.length;
+    const duration=2600;
+    const start=performance.now();
+    const easeOut=t=>1-Math.pow(1-t,3);
 
-      // We want slice center aligned to pointer
-      const pointerAngle = Math.PI * 1.5; // top
-      const targetCenter = (targetIndex + 0.5) * slice;
-
-      // rotation such that (pointerAngle - rotation) hits targetCenter
-      // => rotation = pointerAngle - targetCenter
-      let desired = pointerAngle - targetCenter;
-
-      // add multiple spins + keep continuity
-      const spins = 6; // full turns
-      const base = currentRotation;
-      // normalize desired to be near next turn
-      while(desired < base) desired += Math.PI * 2;
-      const finalRotation = desired + spins * Math.PI * 2;
-
-      const duration = 2800; // ms
-      const start = performance.now();
-
-      function easeOutCubic(t){ return 1 - Math.pow(1-t,3); }
-
-      function frame(now){
-        const t = Math.min(1, (now - start) / duration);
-        const eased = easeOutCubic(t);
-
-        currentRotation = base + (finalRotation - base) * eased;
-        drawWheel(currentRotation);
-
-        if(t < 1){
-          requestAnimationFrame(frame);
-        }else{
-          // tiny settle wobble
-          settle(targetIndex);
-        }
+    function frame(now){
+      const t=Math.min(1,(now-start)/duration);
+      const e=easeOut(t);
+      currentRotation=base + (finalRot-base)*e;
+      drawWheel(currentRotation);
+      if(t<1) requestAnimationFrame(frame);
+      else{
+        const idx=pickIndex(currentRotation);
+        bubble.textContent=menus[idx].emoji;
+        spinning=false;
       }
-      requestAnimationFrame(frame);
     }
+    requestAnimationFrame(frame);
+  }
 
-    function settle(targetIndex){
-      const wobble = 10 * (Math.PI/180); // 10deg
-      const base = currentRotation;
-      const duration = 260;
-      const start = performance.now();
+  gearBtn.addEventListener("click", spin);
 
-      function frame(now){
-        const t = Math.min(1, (now - start)/duration);
-        // damped wobble
-        const w = Math.cos(t * Math.PI * 2) * (1 - t);
-        currentRotation = base + wobble * w;
-        drawWheel(currentRotation);
+  // 내 이미지 업로드
+  const imgInput=document.getElementById("imgInput");
+  const myImg=document.getElementById("myImg");
+  const saved=localStorage.getItem("myCenterImage");
+  if(saved) myImg.src=saved;
 
-        if(t < 1) requestAnimationFrame(frame);
-        else{
-          const idx = pickIndexFromRotation(currentRotation);
-          showPop(menus[idx]);
-          spinBtn.disabled = false;
-          spinBtn.textContent = "룰렛 돌리기";
-          spinning = false;
-        }
-      }
-      requestAnimationFrame(frame);
-    }
+  imgInput.addEventListener("change",(e)=>{
+    const f=e.target.files?.[0];
+    if(!f) return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      myImg.src=reader.result;
+      localStorage.setItem("myCenterImage", reader.result);
+    };
+    reader.readAsDataURL(f);
+  });
 
-    // click center badge or button
-    spinBtn.addEventListener("click", spin);
-    document.querySelector(".center-badge").addEventListener("click", spin);
-
-    // initial draw
-    fitCanvas();
-    window.addEventListener("resize", fitCanvas);
-  </script>
+  drawWheel(currentRotation);
+</script>
 </body>
 </html>
-
