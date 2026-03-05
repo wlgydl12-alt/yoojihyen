@@ -3,22 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>마이페이지 · 음식룰렛 (UT Prototype)</title>
+  <title>마이배민 · 음식룰렛 (UT Prototype)</title>
   <style>
     :root{
-      --bg:#F3F4F6;
-      --card:#fff;
       --text:#111827;
       --muted:#6B7280;
       --line:rgba(0,0,0,.06);
 
       --mint:#2AC1BC;
-
-      --gold:#B9852B;
-      --gold2:#F4C542;
       --shadow:0 12px 26px rgba(0,0,0,.10);
       --shadow2:0 8px 18px rgba(0,0,0,.08);
-      --radius:16px;
+
+      /* ✅ 은은한 민트 배경 */
+      --mintBg1: rgba(42,193,188,.16);
+      --mintBg2: rgba(42,193,188,.06);
+
+      /* 룰렛 하늘색 */
+      --sky:#6ED3E8;
+      --sky2:#AEEAF4;
     }
     *{box-sizing:border-box}
     body{
@@ -30,9 +32,11 @@
     .app{
       width:min(390px, 100%);
       margin:0 auto;
-      background:var(--bg);
       min-height:100vh;
       padding-bottom:88px;
+
+      /* ✅ 배경 민트 그라데이션(두명하듯이) */
+      background: linear-gradient(180deg, var(--mintBg1), var(--mintBg2) 55%, #F7F8FA 100%);
     }
 
     /* header */
@@ -42,18 +46,21 @@
     }
     .h-title{font-size:18px; font-weight:900; letter-spacing:-.03em;}
     .h-icons{display:flex; gap:10px;}
-    .h-dot{width:18px;height:18px;border-radius:999px;background:rgba(0,0,0,.22);opacity:.35;}
+    .h-dot{width:18px;height:18px;border-radius:999px;background:rgba(0,0,0,.22);opacity:.25;}
 
     /* search pill */
     .search{
       margin:0 16px 10px;
       padding:10px 12px;
-      background:rgba(0,0,0,.06);
+      background:rgba(255,255,255,.78);
       border-radius:999px;
       font-size:12px;
       font-weight:800;
       display:flex; align-items:center; justify-content:space-between;
       color:#374151;
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow: 0 6px 16px rgba(0,0,0,.06);
+      backdrop-filter: blur(10px);
     }
     .search .chev{opacity:.55}
 
@@ -70,33 +77,12 @@
       display:flex; justify-content:center; align-items:center;
       position:relative;
       margin-top:8px;
+      padding-top:6px;
     }
     canvas{
       width:290px; height:290px;
       display:block;
-      filter: drop-shadow(0 18px 22px rgba(0,0,0,.12));
-    }
-
-    /* ring */
-    .ring{
-      position:absolute;
-      width:312px; height:312px;
-      border-radius:999px;
-      border:10px solid var(--gold);
-      box-shadow: 0 10px 18px rgba(0,0,0,.10) inset;
-      pointer-events:none;
-    }
-    .bulbs{
-      position:absolute;
-      width:312px;height:312px;border-radius:999px;
-      pointer-events:none;
-    }
-    .bulb{
-      position:absolute;
-      width:10px;height:10px;border-radius:999px;
-      background:#fff;
-      box-shadow:0 0 10px rgba(255,255,255,.65);
-      opacity:.85;
+      filter: drop-shadow(0 18px 22px rgba(0,0,0,.10));
     }
 
     /* center image */
@@ -116,59 +102,35 @@
       display:block;
     }
 
-    /* sparkles */
-    .spark{
+    /* ✅ pop 결과(뿅!) */
+    .pop{
       position:absolute;
-      width:12px;height:12px;
-      background:#111827;
-      border-radius:4px;
-      transform:rotate(45deg);
-      opacity:.9;
-      z-index:4;
-    }
-    .spark.s1{left:66px; top:122px}
-    .spark.s2{right:66px; top:144px; transform:rotate(18deg)}
-
-    /* thought bubble (emoji result) */
-    .bubble{
-      position:absolute;
-      right:18px; top:70px;
-      width:96px;height:62px;
-      background:#fff;
-      border-radius:999px;
-      box-shadow:var(--shadow2);
-      display:flex; align-items:center; justify-content:center;
-      font-size:26px;
-      z-index:5;
-    }
-    .bubble:after{
-      content:"";
-      position:absolute;
-      left:14px;
-      bottom:-10px;
-      width:18px;height:18px;
-      background:#fff;
-      transform:rotate(45deg);
-      border-radius:4px;
-      box-shadow:var(--shadow2);
-    }
-
-    /* right hint */
-    .rightHint{
-      position:absolute;
-      right:0; top:205px;
-      width:90px;
+      bottom: 132px;
+      transform: translateY(18px) scale(.92);
+      opacity: 0;
+      pointer-events:none;
+      z-index: 6;
+      transition: transform .35s ease, opacity .25s ease;
       text-align:center;
-      font-size:12px;
-      font-weight:900;
-      line-height:1.2;
     }
-    .arrow{
-      margin:6px auto 0;
-      width:0;height:0;
-      border-left:10px solid transparent;
-      border-right:10px solid transparent;
-      border-top:14px solid #EF4444;
+    .pop.on{
+      opacity:1;
+      transform: translateY(0) scale(1);
+    }
+    .pop .emoji{
+      font-size: 44px;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
+    }
+    .pop .label{
+      margin-top: 6px;
+      display:inline-block;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 900;
+      font-size: 13px;
+      box-shadow: 0 8px 16px rgba(0,0,0,.08);
     }
 
     /* button row */
@@ -180,10 +142,10 @@
       align-items:stretch;
     }
     .boxBtn{
-      background:#FDE68A;
-      border:2px solid var(--gold);
-      border-radius:10px;
-      box-shadow:0 6px 0 rgba(0,0,0,.08);
+      background:#FFFFFF;
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:12px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
       padding:10px;
       font-weight:900;
       font-size:12px;
@@ -200,49 +162,63 @@
       padding:8px 10px;
     }
     .gearBtn{
-      background:#FDE68A;
-      border:2px solid var(--gold);
-      border-radius:10px;
-      box-shadow:0 6px 0 rgba(0,0,0,.08);
+      background:#FFFFFF;
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:12px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
       display:grid; place-items:center;
       cursor:pointer;
       user-select:none;
       overflow:hidden;
     }
     .gearBtn .inner{
-      width:28px;height:28px;border-radius:8px;
-      background:#EF4444;
-      color:#fff;
+      width:28px;height:28px;border-radius:10px;
+      background: rgba(42,193,188,.18);
+      color:#0f766e;
       display:grid; place-items:center;
       font-weight:900;
     }
+
+    /* upload */
+    .upload{
+      margin:10px 16px 0;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .upload input{max-width:220px;}
+    .tiny{opacity:.8;font-weight:800;}
 
     /* club card */
     .club{
       margin:0 16px 10px;
       background:#fff;
       border-radius:14px;
-      border:1px solid var(--line);
-      box-shadow:var(--shadow2);
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
       padding:12px;
     }
     .club .title{display:flex; align-items:center; gap:8px; font-weight:900; font-size:13px;}
     .mintDot{width:10px;height:10px;border-radius:999px;background:var(--mint);}
     .club .desc{margin-top:6px;font-size:12px;font-weight:800;color:#0EA5A4;}
 
-    /* list rows (쿠폰함/선물함/배민페이) */
+    /* list rows */
     .list{
       margin:0 16px;
       background:#fff;
       border-radius:14px;
-      border:1px solid var(--line);
-      box-shadow:var(--shadow2);
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
       overflow:hidden;
     }
     .li{
       padding:14px 12px;
       display:flex; align-items:center; justify-content:space-between;
-      border-top:1px solid var(--line);
+      border-top:1px solid rgba(0,0,0,.06);
       gap:10px;
       font-size:13px;
       font-weight:900;
@@ -259,14 +235,14 @@
       margin:12px 16px 0;
       background:#fff;
       border-radius:14px;
-      border:1px solid var(--line);
-      box-shadow:var(--shadow2);
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
       overflow:hidden;
     }
     .secRow{
       padding:13px 12px;
       display:flex; align-items:center; justify-content:space-between;
-      border-top:1px solid var(--line);
+      border-top:1px solid rgba(0,0,0,.06);
       font-weight:900;
       font-size:13px;
     }
@@ -279,13 +255,13 @@
     }
     .chev{opacity:.5}
 
-    /* banner (no external image) */
+    /* banner */
     .banner{
       margin:12px 16px 0;
       border-radius:14px;
       overflow:hidden;
-      border:1px solid var(--line);
-      box-shadow:var(--shadow2);
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
       background: linear-gradient(90deg,#FF7A00,#FF3D00);
       color:#fff;
       padding:16px 14px;
@@ -321,8 +297,8 @@
     .miniCard{
       background:#fff;
       border-radius:14px;
-      border:1px solid var(--line);
-      box-shadow:var(--shadow2);
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
       padding:10px 8px;
       text-align:center;
     }
@@ -339,7 +315,7 @@
     .miniEmoji{
       width:44px;height:44px;border-radius:16px;
       margin:0 auto 6px;
-      background: linear-gradient(135deg, rgba(103,215,234,.35), rgba(42,193,188,.15));
+      background: linear-gradient(135deg, rgba(110,211,232,.22), rgba(42,193,188,.14));
       display:grid; place-items:center;
       font-size:24px;
     }
@@ -356,7 +332,7 @@
       background:#fff;
       border-radius:18px;
       box-shadow:var(--shadow);
-      border:1px solid var(--line);
+      border:1px solid rgba(0,0,0,.06);
       padding:10px 10px;
       display:grid;
       grid-template-columns: repeat(5, 1fr);
@@ -380,20 +356,6 @@
       background: rgba(42,193,188,.16);
       border:1px solid rgba(42,193,188,.22);
     }
-
-    /* upload (hidden but usable) */
-    .upload{
-      margin:10px 16px 0;
-      font-size:12px;
-      color:var(--muted);
-      font-weight:800;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-    }
-    .upload input{max-width:220px;}
-    .tiny{opacity:.8;font-weight:800;}
   </style>
 </head>
 
@@ -417,24 +379,16 @@
 
       <div class="wheelWrap">
         <canvas id="wheel" width="600" height="600" aria-label="음식 룰렛"></canvas>
-        <div class="ring" aria-hidden="true"></div>
-        <div class="bulbs" id="bulbs" aria-hidden="true"></div>
 
-        <!-- ✅ 내 이미지: 아래 업로드로 바꿀 수 있음 -->
         <div class="centerImg" title="내 이미지">
           <img id="myImg" alt="my image"
                src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23fff'/><text x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-size='34' fill='%236b7280' font-family='Arial'>MY</text></svg>">
         </div>
 
-        <div class="spark s1" aria-hidden="true"></div>
-        <div class="spark s2" aria-hidden="true"></div>
-
-        <div class="bubble" id="bubble" title="결과">🍗</div>
-      </div>
-
-      <div class="rightHint">
-        지금 땡기는<br/>메뉴는?
-        <div class="arrow" aria-hidden="true"></div>
+        <div class="pop" id="pop">
+          <div class="emoji" id="popEmoji">🍗</div>
+          <div class="label" id="popLabel">치킨</div>
+        </div>
       </div>
     </div>
 
@@ -446,7 +400,6 @@
       </div>
     </div>
 
-    <!-- 내 이미지 업로드(압축/파일 없이 해결) -->
     <div class="upload">
       <div class="tiny">내 이미지 넣기</div>
       <input id="imgInput" type="file" accept="image/*" />
@@ -522,125 +475,185 @@
   </nav>
 
 <script>
-  // 메뉴 6개 (이모지 고정)
   const menus = [
-    { label:"치킨", emoji:"🍗" },
-    { label:"피자", emoji:"🍕" },
-    { label:"초밥", emoji:"🍣" },
-    { label:"버거", emoji:"🍔" },
-    { label:"떡볶이", emoji:"🍢" },
-    { label:"국밥", emoji:"🍲" },
+    { label: "치킨", emoji: "🍗" },
+    { label: "피자", emoji: "🍕" },
+    { label: "떡볶이", emoji: "🍢" },
+    { label: "햄버거", emoji: "🍔" },
+    { label: "초밥", emoji: "🍣" },
+    { label: "국밥", emoji: "🍲" },
   ];
 
   const canvas = document.getElementById("wheel");
   const ctx = canvas.getContext("2d");
-  const cx = canvas.width/2, cy = canvas.height/2;
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
   const radius = 250;
 
-  const bubble = document.getElementById("bubble");
-  const gearBtn = document.getElementById("gearBtn");
+  const sliceColors = ["#6ED3E8", "#AEEAF4"];
 
-  // bulbs 생성
-  const bulbsEl = document.getElementById("bulbs");
-  const bulbCount = 28;
-  for(let i=0;i<bulbCount;i++){
-    const b=document.createElement("div");
-    b.className="bulb";
-    const ang=(i/bulbCount)*Math.PI*2;
-    const x=156 + Math.cos(ang)*132 - 5;
-    const y=156 + Math.sin(ang)*132 - 5;
-    b.style.left=x+"px";
-    b.style.top=y+"px";
-    b.style.opacity=(i%2?0.92:0.62);
-    bulbsEl.appendChild(b);
+  function roundRect(ctx, x, y, w, h, r){
+    const rr = Math.min(r, w/2, h/2);
+    ctx.beginPath();
+    ctx.moveTo(x+rr, y);
+    ctx.arcTo(x+w, y, x+w, y+h, rr);
+    ctx.arcTo(x+w, y+h, x, y+h, rr);
+    ctx.arcTo(x, y+h, x, y, rr);
+    ctx.arcTo(x, y, x+w, y, rr);
+    ctx.closePath();
   }
 
-  // 룰렛 그리기 (캡쳐처럼 흰 섹션 + 얇은 라인)
-  let spinning=false;
-  let currentRotation=0;
-
-  function drawWheel(rot){
+  function drawWheel(rotationRad){
     ctx.clearRect(0,0,canvas.width,canvas.height);
+
     ctx.save();
     ctx.translate(cx, cy);
-    ctx.rotate(rot);
+    ctx.rotate(rotationRad);
 
-    const slice=(Math.PI*2)/menus.length;
+    const slice = (Math.PI * 2) / menus.length;
 
-    for(let i=0;i<menus.length;i++){
-      const start=i*slice, end=start+slice;
+    for(let i=0; i<menus.length; i++){
+      const start = i * slice;
+      const end = start + slice;
 
       ctx.beginPath();
       ctx.moveTo(0,0);
       ctx.arc(0,0,radius,start,end);
       ctx.closePath();
-      ctx.fillStyle = (i%2===0) ? "#FFFFFF" : "#F7F7F7";
+      ctx.fillStyle = sliceColors[i%2];
       ctx.fill();
 
-      ctx.lineWidth=4;
-      ctx.strokeStyle="rgba(0,0,0,.10)";
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = "rgba(255,255,255,.85)";
       ctx.stroke();
 
-      const mid=start+slice/2;
+      const mid = start + slice/2;
       ctx.save();
       ctx.rotate(mid);
 
-      // emoji
-      ctx.font="900 44px system-ui, Apple Color Emoji, Segoe UI Emoji";
-      ctx.textAlign="center";
-      ctx.textBaseline="middle";
-      ctx.fillText(menus[i].emoji, radius*0.60, 0);
+      ctx.font = "900 44px system-ui, Apple Color Emoji, Segoe UI Emoji";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#111827";
+      ctx.fillText(menus[i].emoji, radius * 0.62, 0);
+
+      const text = menus[i].label;
+      ctx.font = "900 20px system-ui, -apple-system, 'Noto Sans KR', sans-serif";
+      const w = ctx.measureText(text).width;
+      const pillW = w + 26, pillH = 34;
+      const px = radius * 0.62;
+      const py = 44;
+
+      ctx.fillStyle = "rgba(255,255,255,.92)";
+      roundRect(ctx, px - pillW/2, py - pillH/2, pillW, pillH, 999);
+      ctx.fill();
+
+      ctx.strokeStyle = "rgba(0,0,0,.06)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(17,24,39,.92)";
+      ctx.fillText(text, px, py+1);
 
       ctx.restore();
     }
 
-    // inner ring
     ctx.beginPath();
     ctx.arc(0,0,radius-8,0,Math.PI*2);
-    ctx.lineWidth=10;
-    ctx.strokeStyle="rgba(0,0,0,.12)";
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "rgba(207,246,255,.9)";
     ctx.stroke();
 
     ctx.restore();
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.beginPath();
+    ctx.arc(0,0,10,0,Math.PI*2);
+    ctx.fillStyle = "rgba(17,24,39,.08)";
+    ctx.fill();
+    ctx.restore();
   }
 
-  function pickIndex(rot){
-    const slice=(Math.PI*2)/menus.length;
-    const pointerAngle=Math.PI*1.5; // top
-    const angle=(pointerAngle - (rot%(Math.PI*2)) + Math.PI*2)%(Math.PI*2);
-    return Math.floor(angle/slice)%menus.length;
+  // pop
+  const pop = document.getElementById("pop");
+  const popEmoji = document.getElementById("popEmoji");
+  const popLabel = document.getElementById("popLabel");
+
+  function showPop(menu){
+    popEmoji.textContent = menu.emoji;
+    popLabel.textContent = menu.label;
+    pop.classList.remove("on");
+    requestAnimationFrame(()=> pop.classList.add("on"));
+    setTimeout(()=> pop.classList.remove("on"), 1500);
+  }
+
+  // spin
+  let spinning = false;
+  let currentRotation = 0;
+  const gearBtn = document.getElementById("gearBtn");
+
+  function pickIndexFromRotation(rot){
+    const slice = (Math.PI * 2) / menus.length;
+    const pointerAngle = (Math.PI * 1.5); // top
+    const angle = (pointerAngle - (rot % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+    return Math.floor(angle / slice) % menus.length;
   }
 
   function spin(){
     if(spinning) return;
-    spinning=true;
+    spinning = true;
 
-    const targetIndex=Math.floor(Math.random()*menus.length);
-    const slice=(Math.PI*2)/menus.length;
-    const pointerAngle=Math.PI*1.5;
-    const targetCenter=(targetIndex+0.5)*slice;
+    const targetIndex = Math.floor(Math.random() * menus.length);
+    const slice = (Math.PI * 2) / menus.length;
 
-    let desired=pointerAngle - targetCenter;
-    const base=currentRotation;
-    while(desired<base) desired += Math.PI*2;
+    const pointerAngle = Math.PI * 1.5;
+    const targetCenter = (targetIndex + 0.5) * slice;
+    let desired = pointerAngle - targetCenter;
 
-    const spins=7;
-    const finalRot=desired + spins*Math.PI*2;
+    const spins = 6;
+    const base = currentRotation;
+    while(desired < base) desired += Math.PI * 2;
+    const finalRotation = desired + spins * Math.PI * 2;
 
-    const duration=2600;
-    const start=performance.now();
-    const easeOut=t=>1-Math.pow(1-t,3);
+    const duration = 2800;
+    const start = performance.now();
+    const easeOutCubic = t => 1 - Math.pow(1-t,3);
 
     function frame(now){
-      const t=Math.min(1,(now-start)/duration);
-      const e=easeOut(t);
-      currentRotation=base + (finalRot-base)*e;
+      const t = Math.min(1, (now - start) / duration);
+      const eased = easeOutCubic(t);
+
+      currentRotation = base + (finalRotation - base) * eased;
       drawWheel(currentRotation);
-      if(t<1) requestAnimationFrame(frame);
+
+      if(t < 1){
+        requestAnimationFrame(frame);
+      }else{
+        settle();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function settle(){
+    const wobble = 10 * (Math.PI/180);
+    const base = currentRotation;
+    const duration = 260;
+    const start = performance.now();
+
+    function frame(now){
+      const t = Math.min(1, (now - start)/duration);
+      const w = Math.cos(t * Math.PI * 2) * (1 - t);
+
+      currentRotation = base + wobble * w;
+      drawWheel(currentRotation);
+
+      if(t < 1) requestAnimationFrame(frame);
       else{
-        const idx=pickIndex(currentRotation);
-        bubble.textContent=menus[idx].emoji;
-        spinning=false;
+        const idx = pickIndexFromRotation(currentRotation);
+        showPop(menus[idx]);
+        spinning = false;
       }
     }
     requestAnimationFrame(frame);
@@ -648,7 +661,7 @@
 
   gearBtn.addEventListener("click", spin);
 
-  // 내 이미지 업로드
+  // center image upload
   const imgInput=document.getElementById("imgInput");
   const myImg=document.getElementById("myImg");
   const saved=localStorage.getItem("myCenterImage");
