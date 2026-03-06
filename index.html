@@ -4,17 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>마이배민 · 음식룰렛 (UT Prototype)</title>
-  <meta name="description" content="음식 룰렛으로 재미있게 음식을 추천받아보세요. 마이배민 앱의 프로토타입입니다.">
-  <meta name="keywords" content="음식, 룰렛, 추천, 배민, 마이배민, 프로토타입">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="wlgydl12-alt">
-  <meta property="og:title" content="마이배민 · 음식룰렛 (UT Prototype)">
-  <meta property="og:description" content="음식 룰렛으로 재미있게 음식을 추천받아보세요.">
-  <meta property="og:url" content="https://wlgydl12-alt.github.io/yoojihyen/">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="마이배민 · 음식룰렛 (UT Prototype)">
-  <meta name="twitter:description" content="음식 룰렛으로 재미있게 음식을 추천받아보세요.">
   <style>
     :root{
       --text:#111827;
@@ -591,13 +580,21 @@
   const popEmoji = document.getElementById("popEmoji");
   const popLabel = document.getElementById("popLabel");
 
-  function showPop(menu){
-    popEmoji.textContent = menu.emoji;
-    popLabel.textContent = menu.label;
-    pop.classList.remove("on");
-    requestAnimationFrame(()=> pop.classList.add("on"));
-    setTimeout(()=> pop.classList.remove("on"), 1500);
-  }
+function showPop(menu){
+  popEmoji.textContent = menu.emoji;
+  popLabel.textContent = menu.label;
+  pop.classList.remove("on");
+  requestAnimationFrame(()=> pop.classList.add("on"));
+
+  // ✅ 결과를 저장해서 menu.html에서 읽게 함
+  localStorage.setItem("selectedMenuName", menu.label);
+  localStorage.setItem("selectedMenuEmoji", menu.emoji);
+
+  // ✅ 1.5초 뒤 menu.html로 이동
+  setTimeout(()=>{
+    location.href = "menu.html";
+  }, 1500);
+}
 
   // spin
   let spinning = false;

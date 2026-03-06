@@ -1,209 +1,28 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>마이배민 · 음식룰렛 (UT Prototype)</title>
-  <style>
-    :root{
-      --text:#111827;
-      --muted:#6B7280;
-      --line:rgba(0,0,0,.06);
+# 마이배민 · 음식룰렛 (UT Prototype)
 
-      --mint:#2AC1BC;
-      --shadow:0 12px 26px rgba(0,0,0,.10);
-      --shadow2:0 8px 18px rgba(0,0,0,.08);
+이 저장소는 음식 룰렛 웹 앱의 프로토타입을 담고 있습니다.
 
-      /* ✅ 은은한 민트 배경 */
-      --mintBg1: rgba(42,193,188,.16);
-      --mintBg2: rgba(42,193,188,.06);
+웹사이트는 GitHub Pages로 호스팅되어 있습니다:
 
-      /* 룰렛 하늘색 */
-      --sky:#6ED3E8;
-      --sky2:#AEEAF4;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
-      background:#fff;
-      color:var(--text);
-    }
-    .app{
-      width:min(390px, 100%);
-      margin:0 auto;
-      min-height:100vh;
-      padding-bottom:88px;
+🔗 https://wlgydl12-alt.github.io/yoojihyen/
 
-      /* ✅ 배경 민트 그라데이션(두명하듯이) */
-      background: linear-gradient(180deg, var(--mintBg1), var(--mintBg2) 55%, #F7F8FA 100%);
-    }
+> 위 주소로 접속하면 룰렛 화면이 나타나고 메뉴를 선택하면 결과 페이지로 이동합니다.
 
-    /* header */
-    .header{
-      padding:14px 16px 8px;
-      display:flex; align-items:center; justify-content:space-between;
-    }
-    .h-title{font-size:18px; font-weight:900; letter-spacing:-.03em;}
-    .h-icons{display:flex; gap:10px;}
-    .h-dot{width:18px;height:18px;border-radius:999px;background:rgba(0,0,0,.22);opacity:.25;}
 
-    /* search pill */
-    .search{
-      margin:0 16px 10px;
-      padding:10px 12px;
-      background:rgba(255,255,255,.78);
-      border-radius:999px;
-      font-size:12px;
-      font-weight:800;
-      display:flex; align-items:center; justify-content:space-between;
-      color:#374151;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow: 0 6px 16px rgba(0,0,0,.06);
-      backdrop-filter: blur(10px);
-    }
-    .search .chev{opacity:.55}
+## 사용법
 
-    /* roulette block */
-    .rouletteArea{
-      margin:0 16px 10px;
-      position:relative;
-    }
-    .stepNo{
-      position:absolute; left:0; top:0;
-      font-size:22px; font-weight:900;
-    }
-    .wheelWrap{
-      display:flex; justify-content:center; align-items:center;
-      position:relative;
-      margin-top:8px;
-      padding-top:6px;
-    }
-    canvas{
-      width:290px; height:290px;
-      display:block;
-      filter: drop-shadow(0 18px 22px rgba(0,0,0,.10));
-    }
+- 브라우저에서 위 링크를 열어 앱을 사용하세요.
+- 로컬에서 확인하려면 `python3 -m http.server` 등 간단한 HTTP 서버를 사용하세요.
 
-    /* center image */
-    .centerImg{
-      position:absolute;
-      width:86px;height:86px;border-radius:999px;
-      background:#fff;
-      border:6px solid #fff;
-      box-shadow:var(--shadow2);
-      overflow:hidden;
-      z-index:3;
-      display:grid; place-items:center;
-    }
-    .centerImg img{
-      width:100%;height:100%;
-      object-fit:cover;
-      display:block;
-    }
 
-    /* ✅ pop 결과(뿅!) */
-    .pop{
-      position:absolute;
-      bottom: 132px;
-      transform: translateY(18px) scale(.92);
-      opacity: 0;
-      pointer-events:none;
-      z-index: 6;
-      transition: transform .35s ease, opacity .25s ease;
-      text-align:center;
-    }
-    .pop.on{
-      opacity:1;
-      transform: translateY(0) scale(1);
-    }
-    .pop .emoji{
-      font-size: 44px;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
-    }
-    .pop .label{
-      margin-top: 6px;
-      display:inline-block;
-      background:#fff;
-      border:1px solid rgba(0,0,0,.08);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-weight: 900;
-      font-size: 13px;
-      box-shadow: 0 8px 16px rgba(0,0,0,.08);
-    }
+## 파일 구성
 
-    /* button row */
-    .btnRow{
-      margin:8px 16px 8px;
-      display:grid;
-      grid-template-columns: 1fr 1fr 46px;
-      gap:10px;
-      align-items:stretch;
-    }
-    .boxBtn{
-      background:#FFFFFF;
-      border:1px solid rgba(0,0,0,.08);
-      border-radius:12px;
-      box-shadow: 0 10px 18px rgba(0,0,0,.06);
-      padding:10px;
-      font-weight:900;
-      font-size:12px;
-      display:flex; align-items:center; justify-content:center;
-      text-align:center;
-      line-height:1.2;
-      color:#111827;
-      user-select:none;
-    }
-    .boxBtn.small{
-      justify-content:flex-start;
-      font-weight:800;
-      font-size:11px;
-      padding:8px 10px;
-    }
-    .gearBtn{
-      background:#FFFFFF;
-      border:1px solid rgba(0,0,0,.08);
-      border-radius:12px;
-      box-shadow: 0 10px 18px rgba(0,0,0,.06);
-      display:grid; place-items:center;
-      cursor:pointer;
-      user-select:none;
-      overflow:hidden;
-    }
-    .gearBtn .inner{
-      width:28px;height:28px;border-radius:10px;
-      background: rgba(42,193,188,.18);
-      color:#0f766e;
-      display:grid; place-items:center;
-      font-weight:900;
-    }
+- `index.html` – 메인 룰렛 인터페이스
+- `menu.html` – 룰렛 결과 및 추천 가게
+- `robots.txt`, `sitemap.xml` – 검색 엔진 설정
 
-    /* upload */
-    .upload{
-      margin:10px 16px 0;
-      font-size:12px;
-      color:var(--muted);
-      font-weight:800;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-    }
-    .upload input{max-width:220px;}
-    .tiny{opacity:.8;font-weight:800;}
 
-    /* club card */
-    .club{
-      margin:0 16px 10px;
-      background:#fff;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow: 0 10px 18px rgba(0,0,0,.06);
-      padding:12px;
-    }
-    .club .title{display:flex; align-items:center; gap:8px; font-weight:900; font-size:13px;}
-    .mintDot{width:10px;height:10px;border-radius:999px;background:var(--mint);}
+감사합니다!
     .club .desc{margin-top:6px;font-size:12px;font-weight:800;color:#0EA5A4;}
 
     /* list rows */
@@ -580,21 +399,13 @@
   const popEmoji = document.getElementById("popEmoji");
   const popLabel = document.getElementById("popLabel");
 
-function showPop(menu){
-  popEmoji.textContent = menu.emoji;
-  popLabel.textContent = menu.label;
-  pop.classList.remove("on");
-  requestAnimationFrame(()=> pop.classList.add("on"));
-
-  // ✅ 결과를 저장해서 menu.html에서 읽게 함
-  localStorage.setItem("selectedMenuName", menu.label);
-  localStorage.setItem("selectedMenuEmoji", menu.emoji);
-
-  // ✅ 1.5초 뒤 menu.html로 이동
-  setTimeout(()=>{
-    location.href = "menu.html";
-  }, 1500);
-}
+  function showPop(menu){
+    popEmoji.textContent = menu.emoji;
+    popLabel.textContent = menu.label;
+    pop.classList.remove("on");
+    requestAnimationFrame(()=> pop.classList.add("on"));
+    setTimeout(()=> pop.classList.remove("on"), 1500);
+  }
 
   // spin
   let spinning = false;
