@@ -19,8 +19,7 @@
 
 - `index.html` – 메인 룰렛 인터페이스
 - `menu.html` – 룰렛 결과 및 추천 가게
-- `robots.txt`, `sitemap.xml` – 검색 엔진 설정
-- 
+- `robots.txt`, `sitemap.xml` – 검색 엔진 설정 
 
 
 감사합니다!
