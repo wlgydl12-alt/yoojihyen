@@ -14,11 +14,9 @@
       --shadow:0 12px 26px rgba(0,0,0,.10);
       --shadow2:0 8px 18px rgba(0,0,0,.08);
 
-      /* 은은한 민트 배경 */
       --mintBg1: rgba(42,193,188,.16);
       --mintBg2: rgba(42,193,188,.06);
 
-      /* 룰렛 하늘색 */
       --sky:#6ED3E8;
       --sky2:#AEEAF4;
     }
@@ -40,7 +38,6 @@
       background: linear-gradient(180deg, var(--mintBg1), var(--mintBg2) 55%, #F7F8FA 100%);
     }
 
-    /* header */
     .header{
       padding:14px 16px 8px;
       display:flex; align-items:center; justify-content:space-between;
@@ -52,7 +49,6 @@
       background:rgba(0,0,0,.22);opacity:.25;
     }
 
-    /* search pill */
     .search{
       margin:0 16px 10px;
       padding:10px 12px;
@@ -68,7 +64,6 @@
     }
     .search .chev{opacity:.55}
 
-    /* roulette block */
     .rouletteArea{
       margin:0 16px 10px;
       position:relative;
@@ -89,24 +84,6 @@
       filter: drop-shadow(0 18px 22px rgba(0,0,0,.10));
     }
 
-    /* center image */
-    .centerImg{
-      position:absolute;
-      width:86px;height:86px;border-radius:999px;
-      background:#fff;
-      border:6px solid #fff;
-      box-shadow:var(--shadow2);
-      overflow:hidden;
-      z-index:3;
-      display:grid; place-items:center;
-    }
-    .centerImg img{
-      width:100%;height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    /* pop 결과 */
     .pop{
       position:absolute;
       bottom:132px;
@@ -137,7 +114,6 @@
       box-shadow: 0 8px 16px rgba(0,0,0,.08);
     }
 
-    /* button row */
     .btnRow{
       margin:8px 16px 8px;
       display:grid;
@@ -168,8 +144,7 @@
 
     /* 레버 버튼 */
     .gearBtn{
-      display:grid;
-      place-items:center;
+      display:block;
       cursor:pointer;
       user-select:none;
       background:transparent;
@@ -185,52 +160,116 @@
       position:relative;
     }
 
-    .leverImg{
-  width:56px;
-  height:56px;
-  display:block;
-  object-fit:contain;
-  image-rendering:auto;
-  transform-origin: 50% 50%;
-  transition: transform .12s ease, filter .12s ease;
-  filter: drop-shadow(0 6px 8px rgba(0,0,0,.18));
-}
-
-.leverBtn:hover .leverImg{
-  transform: scale(1.03);
-}
-
-.leverBtn:active .leverImg{
-  transform: translateY(4px) scale(.95);
-  filter: drop-shadow(0 3px 5px rgba(0,0,0,.14));
-}
-
-.leverBtn.pulling .leverImg{
-  animation: leverPress .32s cubic-bezier(.2,.8,.2,1);
-}
-
-@keyframes leverPress {
-  0%   { transform: translateY(0) scale(1); }
-  35%  { transform: translateY(7px) scale(.94); }
-  65%  { transform: translateY(3px) scale(.98); }
-  100% { transform: translateY(0) scale(1); }
-}
-
-    /* upload */
-    .upload{
-      margin:10px 16px 0;
-      font-size:12px;
-      color:var(--muted);
-      font-weight:800;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
+    .leverShadow{
+      position:absolute;
+      right:11px;
+      bottom:8px;
+      width:8px;
+      height:30px;
+      border-radius:999px;
+      background:rgba(0,0,0,.14);
+      filter:blur(2px);
+      transform:rotate(10deg);
+      transform-origin:bottom center;
     }
-    .upload input{max-width:220px;}
-    .tiny{opacity:.8;font-weight:800;}
 
-    /* club card */
+    .leverStick{
+      position:absolute;
+      right:20px;
+      bottom:12px;
+      width:6px;
+      height:28px;
+      border-radius:999px;
+      background:linear-gradient(180deg,#F8FAFC 0%, #D1D5DB 28%, #9CA3AF 65%, #E5E7EB 100%);
+      box-shadow:
+        inset 1px 0 1px rgba(255,255,255,.85),
+        inset -1px 0 1px rgba(0,0,0,.16),
+        0 2px 4px rgba(0,0,0,.16);
+      transform-origin:bottom center;
+      transition:transform .18s ease;
+    }
+
+    .leverKnob{
+      position:absolute;
+      right:12px;
+      top:6px;
+      width:20px;
+      height:20px;
+      border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, #ffffff 0%, #7CE7E1 10%, #2AC1BC 45%, #169A96 72%, #0F6F6C 100%);
+      box-shadow:
+        inset 1px 1px 2px rgba(255,255,255,.55),
+        inset -2px -3px 4px rgba(0,0,0,.16),
+        0 4px 7px rgba(42,193,188,.22);
+      transition:
+        top .18s ease,
+        right .18s ease,
+        transform .18s ease;
+    }
+
+    .leverBase{
+      position:absolute;
+      right:9px;
+      bottom:0;
+      width:28px;
+      height:20px;
+      border-radius:8px;
+      background:linear-gradient(180deg,#4B5563 0%, #1F2937 68%, #111827 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.16),
+        inset 0 -3px 5px rgba(0,0,0,.22),
+        0 4px 8px rgba(0,0,0,.16);
+    }
+
+    .leverBase::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:4px;
+      transform:translateX(-50%);
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, #D1D5DB 0%, #6B7280 55%, #374151 100%);
+      box-shadow:inset 0 1px 1px rgba(255,255,255,.2);
+    }
+
+    .leverBtn:hover .leverKnob{
+      transform:scale(1.04);
+    }
+
+    .leverBtn:active .leverStick{
+      transform:rotate(18deg);
+    }
+
+    .leverBtn:active .leverKnob{
+      top:14px;
+      right:6px;
+      transform:scale(.96);
+    }
+
+    .leverBtn.pulling .leverStick{
+      animation: leverStickPull .32s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .leverBtn.pulling .leverKnob{
+      animation: leverKnobPull .32s cubic-bezier(.2,.8,.2,1);
+    }
+
+    @keyframes leverStickPull {
+      0%   { transform:rotate(0deg); }
+      35%  { transform:rotate(20deg); }
+      65%  { transform:rotate(14deg); }
+      100% { transform:rotate(0deg); }
+    }
+
+    @keyframes leverKnobPull {
+      0%   { top:6px; right:12px; transform:scale(1); }
+      35%  { top:15px; right:5px; transform:scale(.96); }
+      65%  { top:11px; right:8px; transform:scale(.98); }
+      100% { top:6px; right:12px; transform:scale(1); }
+    }
+
     .club{
       margin:0 16px 10px;
       background:#fff;
@@ -243,7 +282,6 @@
     .mintDot{width:10px;height:10px;border-radius:999px;background:var(--mint);}
     .club .desc{margin-top:6px;font-size:12px;font-weight:800;color:#0EA5A4;}
 
-    /* list rows */
     .list{
       margin:0 16px;
       background:#fff;
@@ -267,7 +305,6 @@
     .bDot.yellow{background:#F59E0B}
     .li .right{opacity:.9}
 
-    /* section list */
     .section{
       margin:12px 16px 0;
       background:#fff;
@@ -292,7 +329,6 @@
     }
     .chev{opacity:.5}
 
-    /* banner */
     .banner{
       margin:12px 16px 0;
       border-radius:14px;
@@ -324,7 +360,6 @@
       filter: drop-shadow(0 10px 12px rgba(0,0,0,.22));
     }
 
-    /* mini grid */
     .miniGrid{
       margin:12px 16px 0;
       display:grid;
@@ -359,7 +394,6 @@
     .miniCard .t{font-size:12px;font-weight:900;letter-spacing:-.02em;}
     .miniCard .s{font-size:11px;font-weight:800;color:var(--muted);margin-top:2px;}
 
-    /* bottom tab */
     .tabbar{
       position:fixed;
       left:50%;
@@ -417,11 +451,6 @@
       <div class="wheelWrap">
         <canvas id="wheel" width="600" height="600" aria-label="음식 룰렛"></canvas>
 
-        <div class="centerImg" title="내 이미지">
-          <img id="myImg" alt="my image"
-               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23fff'/><text x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-size='34' fill='%236b7280' font-family='Arial'>MY</text></svg>">
-        </div>
-
         <div class="pop" id="pop">
           <div class="emoji" id="popEmoji">🍗</div>
           <div class="label" id="popLabel">치킨</div>
@@ -433,15 +462,12 @@
       <div class="boxBtn small">Lv.37 골라먹기<br/>냉삼곱쌈</div>
       <div class="boxBtn">맞춤형 메뉴 배치</div>
 
-      <!-- 레버 버튼 -->
-      <div class="gearBtn leverBtn" id="gearBtn" title="룰렛 돌리기">
-        <img src="img/lever.png" class="leverImg" alt="룰렛 돌리기 버튼" class="leverImg" />
-      </div>
-    </div>
-
-    <div class="upload">
-      <div class="tiny">내 이미지 넣기</div>
-      <input id="imgInput" type="file" accept="image/*" />
+      <button class="gearBtn leverBtn" id="gearBtn" title="룰렛 돌리기" aria-label="룰렛 돌리기">
+        <span class="leverShadow"></span>
+        <span class="leverStick"></span>
+        <span class="leverKnob"></span>
+        <span class="leverBase"></span>
+      </button>
     </div>
 
     <div class="club">
@@ -608,14 +634,24 @@
 
     ctx.save();
     ctx.translate(cx, cy);
+
     ctx.beginPath();
-    ctx.arc(0,0,10,0,Math.PI*2);
-    ctx.fillStyle = "rgba(17,24,39,.08)";
+    ctx.arc(0,0,28,0,Math.PI*2);
+    ctx.fillStyle = "#FFFFFF";
     ctx.fill();
+
+    ctx.lineWidth = 6;
+    ctx.strokeStyle = "rgba(42,193,188,.22)";
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(0,0,8,0,Math.PI*2);
+    ctx.fillStyle = "rgba(17,24,39,.12)";
+    ctx.fill();
+
     ctx.restore();
   }
 
-  // pop
   const pop = document.getElementById("pop");
   const popEmoji = document.getElementById("popEmoji");
   const popLabel = document.getElementById("popLabel");
@@ -634,7 +670,6 @@
     }, 1500);
   }
 
-  // spin
   let spinning = false;
   let currentRotation = 0;
   const gearBtn = document.getElementById("gearBtn");
@@ -706,12 +741,11 @@
     requestAnimationFrame(frame);
   }
 
-  // 레버 클릭 애니메이션 + 룰렛 실행
   gearBtn.addEventListener("click", () => {
     if (spinning) return;
 
     gearBtn.classList.remove("pulling");
-    void gearBtn.offsetWidth; // 애니메이션 재시작
+    void gearBtn.offsetWidth;
     gearBtn.classList.add("pulling");
 
     spin();
@@ -719,23 +753,6 @@
 
   gearBtn.addEventListener("animationend", () => {
     gearBtn.classList.remove("pulling");
-  });
-
-  // center image upload
-  const imgInput = document.getElementById("imgInput");
-  const myImg = document.getElementById("myImg");
-  const saved = localStorage.getItem("myCenterImage");
-  if(saved) myImg.src = saved;
-
-  imgInput.addEventListener("change", (e) => {
-    const f = e.target.files?.[0];
-    if(!f) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      myImg.src = reader.result;
-      localStorage.setItem("myCenterImage", reader.result);
-    };
-    reader.readAsDataURL(f);
   });
 
   drawWheel(currentRotation);
