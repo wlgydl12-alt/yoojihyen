@@ -3,21 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>마이배민 · 음식룰렛 (UT Prototype)</title>
+  <title>Food Roulette</title>
   <style>
     :root{
       --text:#111827;
       --muted:#6B7280;
-      --line:rgba(0,0,0,.06);
+      --subtle:#94A3B8;
+      --line:#E8EEF2;
 
-      --mint:#2AC1BC;
-      --shadow:0 12px 26px rgba(0,0,0,.10);
+      --mint:#1FC7C1;
+      --mintDeep:#12B5AF;
+      --mintSoft:#EAFBFA;
+      --mintSoft2:#F4FFFE;
 
-      --mintBg1: rgba(42,193,188,.16);
-      --mintBg2: rgba(42,193,188,.06);
+      --bg:#F7FAFC;
+      --card:#FFFFFF;
 
-      --sky:#6ED3E8;
-      --sky2:#AEEAF4;
+      --shadow-sm:0 6px 14px rgba(15,23,42,.05);
+      --shadow-md:0 12px 28px rgba(15,23,42,.08);
+      --shadow-lg:0 18px 40px rgba(15,23,42,.10);
+
+      --radius:18px;
+      --radius-sm:14px;
     }
 
     *{box-sizing:border-box}
@@ -25,7 +32,7 @@
     body{
       margin:0;
       font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
-      background:#fff;
+      background:var(--bg);
       color:var(--text);
     }
 
@@ -33,65 +40,136 @@
       width:min(390px, 100%);
       margin:0 auto;
       min-height:100vh;
-      padding-bottom:88px;
-      background:linear-gradient(180deg, var(--mintBg1), var(--mintBg2) 55%, #F7F8FA 100%);
+      padding:10px 0 100px;
+      background:
+        radial-gradient(circle at top, rgba(31,199,193,.10), transparent 34%),
+        linear-gradient(180deg, #FCFEFF 0%, #F7FAFC 100%);
     }
 
     .header{
-      padding:14px 16px 8px;
+      padding:10px 16px 8px;
       display:flex;
       align-items:center;
       justify-content:space-between;
     }
 
+    .brandWrap{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+
+    .eyebrow{
+      font-size:11px;
+      font-weight:800;
+      color:var(--mintDeep);
+      letter-spacing:-.02em;
+    }
+
     .h-title{
-      font-size:18px;
+      font-size:20px;
       font-weight:900;
-      letter-spacing:-.03em;
+      letter-spacing:-.04em;
     }
 
     .h-icons{
       display:flex;
-      gap:10px;
+      gap:8px;
     }
 
     .h-dot{
       width:18px;
       height:18px;
       border-radius:999px;
-      background:rgba(0,0,0,.22);
-      opacity:.25;
+      background:#DDE7EC;
+      box-shadow:inset 0 1px 1px rgba(255,255,255,.7);
     }
 
     .search{
-      margin:0 16px 10px;
-      padding:10px 12px;
-      background:rgba(255,255,255,.78);
-      border-radius:999px;
-      font-size:12px;
+      margin:0 16px 14px;
+      padding:13px 14px;
+      background:rgba(255,255,255,.92);
+      border-radius:16px;
+      font-size:13px;
       font-weight:800;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      color:#374151;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:0 6px 16px rgba(0,0,0,.06);
+      color:#334155;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-sm);
       backdrop-filter:blur(10px);
     }
 
-    .search .chev{opacity:.55}
-
-    .rouletteArea{
-      margin:0 16px 10px;
-      position:relative;
+    .search .chev{
+      opacity:.45;
+      font-size:16px;
+      transform:translateY(-1px);
     }
 
-    .stepNo{
-      position:absolute;
-      left:0;
-      top:0;
-      font-size:22px;
+    .rouletteCard{
+      margin:0 16px 14px;
+      background:linear-gradient(180deg, var(--card), #FBFEFE 100%);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow-md);
+      padding:16px 14px 14px;
+    }
+
+    .rouletteTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:8px;
+    }
+
+    .rouletteText{
+      min-width:0;
+    }
+
+    .stepChip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:28px;
+      height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      background:var(--mintSoft);
+      color:var(--mintDeep);
       font-weight:900;
+      font-size:12px;
+      border:1px solid rgba(31,199,193,.16);
+    }
+
+    .rouletteTitle{
+      margin-top:8px;
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:-.04em;
+      line-height:1.2;
+    }
+
+    .rouletteDesc{
+      margin-top:5px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      line-height:1.45;
+    }
+
+    .miniBadge{
+      flex:0 0 auto;
+      padding:8px 10px;
+      border-radius:14px;
+      background:#F8FBFC;
+      border:1px solid var(--line);
+      font-size:11px;
+      font-weight:900;
+      color:#475569;
+      text-align:right;
+      line-height:1.25;
     }
 
     .wheelWrap{
@@ -100,33 +178,45 @@
       align-items:center;
       position:relative;
       margin-top:8px;
-      padding-top:10px;
+      padding:10px 0 4px;
+    }
+
+    .wheelHalo{
+      position:absolute;
+      width:310px;
+      height:310px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(31,199,193,.14) 0%, rgba(31,199,193,.04) 45%, transparent 70%);
+      filter:blur(6px);
+      z-index:0;
     }
 
     .pointer{
       position:absolute;
-      top:2px;
+      top:0;
       left:50%;
       transform:translateX(-50%);
       width:0;
       height:0;
-      border-left:14px solid transparent;
-      border-right:14px solid transparent;
-      border-top:24px solid #111827;
+      border-left:13px solid transparent;
+      border-right:13px solid transparent;
+      border-top:24px solid #0F172A;
       z-index:8;
-      filter:drop-shadow(0 4px 6px rgba(0,0,0,.18));
+      filter:drop-shadow(0 6px 10px rgba(15,23,42,.18));
     }
 
     canvas{
       width:290px;
       height:290px;
       display:block;
-      filter:drop-shadow(0 18px 22px rgba(0,0,0,.10));
+      position:relative;
+      z-index:1;
+      filter:drop-shadow(0 18px 26px rgba(15,23,42,.12));
     }
 
     .pop{
       position:absolute;
-      bottom:132px;
+      bottom:128px;
       transform:translateY(18px) scale(.92);
       opacity:0;
       pointer-events:none;
@@ -142,23 +232,23 @@
 
     .pop .emoji{
       font-size:44px;
-      filter:drop-shadow(0 10px 14px rgba(0,0,0,.12));
+      filter:drop-shadow(0 10px 14px rgba(15,23,42,.12));
     }
 
     .pop .label{
       margin-top:6px;
       display:inline-block;
       background:#fff;
-      border:1px solid rgba(0,0,0,.08);
+      border:1px solid var(--line);
       border-radius:999px;
-      padding:6px 10px;
+      padding:7px 12px;
       font-weight:900;
       font-size:13px;
-      box-shadow:0 8px 16px rgba(0,0,0,.08);
+      box-shadow:var(--shadow-sm);
     }
 
     .btnRow{
-      margin:8px 16px 8px;
+      margin:10px 0 0;
       display:grid;
       grid-template-columns:1fr 1fr 56px;
       gap:10px;
@@ -166,19 +256,19 @@
     }
 
     .boxBtn{
-      background:#FFFFFF;
-      border:1px solid rgba(0,0,0,.08);
-      border-radius:12px;
-      box-shadow:0 10px 18px rgba(0,0,0,.06);
-      padding:10px;
+      background:#F9FCFD;
+      border:1px solid var(--line);
+      border-radius:14px;
+      box-shadow:var(--shadow-sm);
+      padding:12px 10px;
       font-weight:900;
       font-size:12px;
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
-      line-height:1.25;
-      color:#111827;
+      line-height:1.3;
+      color:#0F172A;
       user-select:none;
     }
 
@@ -186,7 +276,8 @@
       justify-content:flex-start;
       font-weight:800;
       font-size:11px;
-      padding:8px 10px;
+      padding:10px 12px;
+      color:#334155;
     }
 
     .gearBtn{
@@ -213,7 +304,7 @@
       width:8px;
       height:30px;
       border-radius:999px;
-      background:rgba(0,0,0,.14);
+      background:rgba(15,23,42,.12);
       filter:blur(2px);
       transform:rotate(10deg);
       transform-origin:bottom center;
@@ -226,11 +317,11 @@
       width:6px;
       height:28px;
       border-radius:999px;
-      background:linear-gradient(180deg,#F8FAFC 0%, #D1D5DB 28%, #9CA3AF 65%, #E5E7EB 100%);
+      background:linear-gradient(180deg,#F8FAFC 0%, #D1D5DB 30%, #94A3B8 70%, #E5E7EB 100%);
       box-shadow:
         inset 1px 0 1px rgba(255,255,255,.85),
-        inset -1px 0 1px rgba(0,0,0,.16),
-        0 2px 4px rgba(0,0,0,.16);
+        inset -1px 0 1px rgba(0,0,0,.12),
+        0 2px 4px rgba(0,0,0,.14);
       transform-origin:bottom center;
       transition:transform .18s ease;
     }
@@ -242,11 +333,11 @@
       width:20px;
       height:20px;
       border-radius:50%;
-      background:radial-gradient(circle at 30% 30%, #ffffff 0%, #7CE7E1 10%, #2AC1BC 45%, #169A96 72%, #0F6F6C 100%);
+      background:radial-gradient(circle at 30% 30%, #ffffff 0%, #8CF0EB 12%, #1FC7C1 48%, #12A9A4 74%, #0D7B77 100%);
       box-shadow:
         inset 1px 1px 2px rgba(255,255,255,.55),
-        inset -2px -3px 4px rgba(0,0,0,.16),
-        0 4px 7px rgba(42,193,188,.22);
+        inset -2px -3px 4px rgba(0,0,0,.14),
+        0 4px 8px rgba(31,199,193,.22);
       transition:
         top .18s ease,
         right .18s ease,
@@ -260,11 +351,11 @@
       width:28px;
       height:20px;
       border-radius:8px;
-      background:linear-gradient(180deg,#4B5563 0%, #1F2937 68%, #111827 100%);
+      background:linear-gradient(180deg,#475569 0%, #1F2937 68%, #111827 100%);
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,.16),
-        inset 0 -3px 5px rgba(0,0,0,.22),
-        0 4px 8px rgba(0,0,0,.16);
+        inset 0 -3px 5px rgba(0,0,0,.20),
+        0 4px 8px rgba(0,0,0,.14);
     }
 
     .leverBase::before{
@@ -276,7 +367,7 @@
       width:10px;
       height:10px;
       border-radius:50%;
-      background:radial-gradient(circle at 30% 30%, #D1D5DB 0%, #6B7280 55%, #374151 100%);
+      background:radial-gradient(circle at 30% 30%, #D1D5DB 0%, #6B7280 55%, #334155 100%);
       box-shadow:inset 0 1px 1px rgba(255,255,255,.2);
     }
 
@@ -310,13 +401,20 @@
       100%{top:6px; right:12px; transform:scale(1);}
     }
 
+    .club,
+    .list,
+    .section,
+    .banner,
+    .miniCard{
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-sm);
+    }
+
     .club{
       margin:0 16px 10px;
       background:#fff;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:0 10px 18px rgba(0,0,0,.06);
-      padding:12px;
+      border-radius:16px;
+      padding:13px;
     }
 
     .club .title{
@@ -332,21 +430,21 @@
       height:10px;
       border-radius:999px;
       background:var(--mint);
+      box-shadow:0 0 0 5px rgba(31,199,193,.10);
     }
 
     .club .desc{
-      margin-top:6px;
+      margin-top:7px;
       font-size:12px;
       font-weight:800;
-      color:#0EA5A4;
+      color:#0F766E;
+      line-height:1.4;
     }
 
     .list{
       margin:0 16px;
       background:#fff;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:0 10px 18px rgba(0,0,0,.06);
+      border-radius:16px;
       overflow:hidden;
     }
 
@@ -355,7 +453,7 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      border-top:1px solid rgba(0,0,0,.06);
+      border-top:1px solid #EEF3F6;
       gap:10px;
       font-size:13px;
       font-weight:900;
@@ -379,23 +477,24 @@
     .bDot.purple{background:#7C3AED}
     .bDot.yellow{background:#F59E0B}
 
-    .li .right{opacity:.9}
+    .li .right{
+      color:#475569;
+      font-weight:800;
+    }
 
     .section{
       margin:12px 16px 0;
       background:#fff;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:0 10px 18px rgba(0,0,0,.06);
+      border-radius:16px;
       overflow:hidden;
     }
 
     .secRow{
-      padding:13px 12px;
+      padding:14px 12px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      border-top:1px solid rgba(0,0,0,.06);
+      border-top:1px solid #EEF3F6;
       font-weight:900;
       font-size:13px;
     }
@@ -412,19 +511,20 @@
       width:14px;
       height:14px;
       border-radius:999px;
-      border:2px solid #111827;
+      border:2px solid #0F172A;
       background:#fff;
     }
 
-    .chev{opacity:.5}
+    .chev{
+      opacity:.45;
+      color:#64748B;
+    }
 
     .banner{
       margin:12px 16px 0;
-      border-radius:14px;
+      border-radius:18px;
       overflow:hidden;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:0 10px 18px rgba(0,0,0,.06);
-      background:linear-gradient(90deg,#FF7A00,#FF3D00);
+      background:linear-gradient(135deg,#FF8A00,#FF5A1F);
       color:#fff;
       padding:16px 14px;
       position:relative;
@@ -447,11 +547,12 @@
     .banner .btn{
       display:inline-block;
       margin-top:10px;
-      background:rgba(0,0,0,.55);
+      background:rgba(15,23,42,.28);
       padding:8px 10px;
       border-radius:999px;
       font-size:12px;
       font-weight:900;
+      border:1px solid rgba(255,255,255,.16);
     }
 
     .banner::after{
@@ -459,9 +560,9 @@
       position:absolute;
       right:14px;
       bottom:10px;
-      font-size:54px;
-      opacity:.9;
-      filter:drop-shadow(0 10px 12px rgba(0,0,0,.22));
+      font-size:52px;
+      opacity:.92;
+      filter:drop-shadow(0 10px 12px rgba(0,0,0,.18));
     }
 
     .miniGrid{
@@ -473,9 +574,7 @@
 
     .miniCard{
       background:#fff;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:0 10px 18px rgba(0,0,0,.06);
+      border-radius:16px;
       padding:10px 8px;
       text-align:center;
     }
@@ -483,8 +582,8 @@
     .cap{
       font-size:10px;
       font-weight:900;
-      color:#6366F1;
-      background:rgba(99,102,241,.10);
+      color:#4F46E5;
+      background:#EEF2FF;
       border-radius:999px;
       display:inline-block;
       padding:2px 6px;
@@ -496,7 +595,7 @@
       height:44px;
       border-radius:16px;
       margin:0 auto 6px;
-      background:linear-gradient(135deg, rgba(110,211,232,.22), rgba(42,193,188,.14));
+      background:linear-gradient(135deg, rgba(31,199,193,.12), rgba(110,211,232,.16));
       display:grid;
       place-items:center;
       font-size:24px;
@@ -506,13 +605,14 @@
       font-size:12px;
       font-weight:900;
       letter-spacing:-.02em;
+      line-height:1.2;
     }
 
     .miniCard .s{
       font-size:11px;
       font-weight:800;
       color:var(--muted);
-      margin-top:2px;
+      margin-top:3px;
       line-height:1.2;
     }
 
@@ -522,11 +622,12 @@
       transform:translateX(-50%);
       bottom:10px;
       width:min(390px, calc(100% - 18px));
-      background:#fff;
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      border:1px solid rgba(0,0,0,.06);
-      padding:10px 10px;
+      background:rgba(255,255,255,.94);
+      backdrop-filter:blur(16px);
+      border-radius:20px;
+      box-shadow:var(--shadow-lg);
+      border:1px solid rgba(232,238,242,.95);
+      padding:10px;
       display:grid;
       grid-template-columns:repeat(5, 1fr);
       gap:6px;
@@ -539,33 +640,38 @@
       gap:4px;
       font-size:11px;
       font-weight:900;
-      color:#6B7280;
+      color:#64748B;
       user-select:none;
       text-align:center;
+      letter-spacing:-.02em;
     }
 
     .tab .dot{
-      width:28px;
-      height:28px;
-      border-radius:10px;
-      background:rgba(17,24,39,.06);
+      width:30px;
+      height:30px;
+      border-radius:11px;
+      background:#F1F5F9;
       display:grid;
       place-items:center;
       font-size:14px;
+      border:1px solid transparent;
     }
 
-    .tab.active{color:#111827}
+    .tab.active{color:#0F172A}
 
     .tab.active .dot{
-      background:rgba(42,193,188,.16);
-      border:1px solid rgba(42,193,188,.22);
+      background:var(--mintSoft);
+      border:1px solid rgba(31,199,193,.18);
     }
   </style>
 </head>
 <body>
   <div class="app">
     <div class="header">
-      <div class="h-title">마이배민</div>
+      <div class="brandWrap">
+        <div class="eyebrow">오늘의 메뉴 추천</div>
+        <div class="h-title">Food Roulette</div>
+      </div>
       <div class="h-icons" aria-hidden="true">
         <div class="h-dot"></div>
         <div class="h-dot"></div>
@@ -577,10 +683,18 @@
       <div class="chev">›</div>
     </div>
 
-    <div class="rouletteArea">
-      <div class="stepNo">1</div>
+    <div class="rouletteCard">
+      <div class="rouletteTop">
+        <div class="rouletteText">
+          <div class="stepChip">STEP 1</div>
+          <div class="rouletteTitle">음식 룰렛 돌리기</div>
+          <div class="rouletteDesc">레버를 눌러 오늘 먹을 메뉴를 랜덤으로 골라보세요.</div>
+        </div>
+        <div class="miniBadge">랜덤 추천<br>6가지 메뉴</div>
+      </div>
 
       <div class="wheelWrap">
+        <div class="wheelHalo" aria-hidden="true"></div>
         <div class="pointer" aria-hidden="true"></div>
         <canvas id="wheel" width="600" height="600" aria-label="음식 룰렛"></canvas>
 
@@ -589,18 +703,18 @@
           <div class="label" id="popLabel">치킨</div>
         </div>
       </div>
-    </div>
 
-    <div class="btnRow">
-      <div class="boxBtn small">나의 취향 레벨<br>Lv.37 냉삼곱쌈</div>
-      <div class="boxBtn">취향 다시 설정</div>
+      <div class="btnRow">
+        <div class="boxBtn small">오늘의 취향 레벨<br>Lv.37 냉삼곱쌈</div>
+        <div class="boxBtn">취향 다시 설정</div>
 
-      <button class="gearBtn leverBtn" id="gearBtn" title="룰렛 돌리기" aria-label="룰렛 돌리기">
-        <span class="leverShadow"></span>
-        <span class="leverStick"></span>
-        <span class="leverKnob"></span>
-        <span class="leverBase"></span>
-      </button>
+        <button class="gearBtn leverBtn" id="gearBtn" title="룰렛 돌리기" aria-label="룰렛 돌리기">
+          <span class="leverShadow"></span>
+          <span class="leverStick"></span>
+          <span class="leverKnob"></span>
+          <span class="leverBase"></span>
+        </button>
+      </div>
     </div>
 
     <div class="club">
@@ -727,7 +841,7 @@
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     const radius = 250;
-    const sliceColors = ["#6ED3E8", "#AEEAF4"];
+    const sliceColors = ["#8DEAE5", "#D8F8F6"];
 
     const pop = document.getElementById("pop");
     const popEmoji = document.getElementById("popEmoji");
@@ -769,7 +883,7 @@
         ctx.fill();
 
         ctx.lineWidth = 6;
-        ctx.strokeStyle = "rgba(255,255,255,.85)";
+        ctx.strokeStyle = "rgba(255,255,255,.92)";
         ctx.stroke();
 
         const mid = start + slice / 2;
@@ -779,26 +893,26 @@
         ctx.font = "900 44px system-ui, Apple Color Emoji, Segoe UI Emoji";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillStyle = "#111827";
+        ctx.fillStyle = "#0F172A";
         ctx.fillText(menus[i].emoji, radius * 0.62, 0);
 
         const text = menus[i].label;
         ctx.font = "900 20px system-ui, -apple-system, 'Noto Sans KR', sans-serif";
         const w = ctx.measureText(text).width;
-        const pillW = w + 26;
+        const pillW = w + 28;
         const pillH = 34;
         const px = radius * 0.62;
         const py = 44;
 
-        ctx.fillStyle = "rgba(255,255,255,.92)";
+        ctx.fillStyle = "rgba(255,255,255,.96)";
         roundRect(ctx, px - pillW / 2, py - pillH / 2, pillW, pillH, 999);
         ctx.fill();
 
-        ctx.strokeStyle = "rgba(0,0,0,.06)";
+        ctx.strokeStyle = "rgba(15,23,42,.06)";
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        ctx.fillStyle = "rgba(17,24,39,.92)";
+        ctx.fillStyle = "#0F172A";
         ctx.fillText(text, px, py + 1);
         ctx.restore();
       }
@@ -806,7 +920,7 @@
       ctx.beginPath();
       ctx.arc(0, 0, radius - 8, 0, Math.PI * 2);
       ctx.lineWidth = 10;
-      ctx.strokeStyle = "rgba(207,246,255,.9)";
+      ctx.strokeStyle = "rgba(228,252,250,.95)";
       ctx.stroke();
       ctx.restore();
 
@@ -814,18 +928,19 @@
       ctx.translate(cx, cy);
 
       ctx.beginPath();
-      ctx.arc(0, 0, 28, 0, Math.PI * 2);
+      ctx.arc(0, 0, 30, 0, Math.PI * 2);
       ctx.fillStyle = "#FFFFFF";
       ctx.fill();
 
       ctx.lineWidth = 6;
-      ctx.strokeStyle = "rgba(42,193,188,.22)";
+      ctx.strokeStyle = "rgba(31,199,193,.20)";
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.arc(0, 0, 8, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(17,24,39,.12)";
+      ctx.arc(0, 0, 9, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(15,23,42,.12)";
       ctx.fill();
+
       ctx.restore();
     }
 
