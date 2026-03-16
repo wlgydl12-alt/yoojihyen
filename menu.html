@@ -3,218 +3,446 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>추천 메뉴</title>
+  <title>추천 메뉴 결과</title>
   <style>
+    :root{
+      --text:#111827;
+      --muted:#6B7280;
+      --mint:#2AC1BC;
+      --mintBg1: rgba(42,193,188,.14);
+      --mintBg2: rgba(42,193,188,.05);
+      --card:#ffffff;
+      --line:rgba(0,0,0,.06);
+      --shadow:0 14px 28px rgba(0,0,0,.10);
+      --shadow2:0 10px 20px rgba(0,0,0,.06);
+    }
+
+    *{box-sizing:border-box}
+
     body{
       margin:0;
-      font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
-      background: linear-gradient(180deg, rgba(42,193,188,.16), rgba(42,193,188,.05), #F7F8FA);
-      color:#111827;
-      display:flex;
-      justify-content:center;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+      color:var(--text);
+      background:#fff;
     }
 
     .app{
       width:min(390px, 100%);
       min-height:100vh;
-      padding:20px 16px 100px;
+      margin:0 auto;
+      padding:16px 16px 110px;
+      background:linear-gradient(180deg, var(--mintBg1), var(--mintBg2) 55%, #F7F8FA 100%);
     }
 
-    .top{
+    .topbar{
       display:flex;
       align-items:center;
-      gap:10px;
-      margin-bottom:20px;
+      justify-content:space-between;
+      margin-bottom:14px;
     }
 
-    .backBtn{
+    .back{
       width:38px;
       height:38px;
-      border:none;
       border-radius:12px;
+      border:1px solid var(--line);
       background:#fff;
-      box-shadow:0 8px 18px rgba(0,0,0,.08);
-      cursor:pointer;
+      display:grid;
+      place-items:center;
       font-size:18px;
+      font-weight:900;
+      box-shadow:var(--shadow2);
+      cursor:pointer;
     }
 
     .title{
-      font-size:20px;
+      font-size:17px;
       font-weight:900;
-      letter-spacing:-0.03em;
+      letter-spacing:-.03em;
     }
 
-    .hero{
-      background:#fff;
-      border-radius:20px;
-      box-shadow:0 12px 24px rgba(0,0,0,.08);
-      padding:28px 20px;
+    .ghost{
+      width:38px;
+      height:38px;
+    }
+
+    .resultHero{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:24px 18px 20px;
       text-align:center;
-      margin-bottom:16px;
+      box-shadow:var(--shadow);
     }
 
-    .emoji{
-      font-size:72px;
-      line-height:1;
+    .badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(42,193,188,.12);
+      color:#0f766e;
+      font-size:12px;
+      font-weight:900;
       margin-bottom:12px;
     }
 
-    .sub{
-      font-size:13px;
-      color:#6B7280;
-      font-weight:800;
-      margin-bottom:6px;
+    .heroEmoji{
+      font-size:68px;
+      line-height:1;
+      filter:drop-shadow(0 10px 14px rgba(0,0,0,.10));
     }
 
-    .menuName{
+    .heroTitle{
+      margin-top:12px;
       font-size:28px;
       font-weight:900;
-      letter-spacing:-0.03em;
-      margin-bottom:10px;
+      letter-spacing:-.04em;
     }
 
-    .desc{
-      font-size:14px;
-      color:#374151;
-      line-height:1.5;
-      font-weight:700;
-    }
-
-    .card{
-      background:#fff;
-      border-radius:18px;
-      box-shadow:0 10px 18px rgba(0,0,0,.06);
-      padding:16px;
-      margin-bottom:12px;
-    }
-
-    .cardTitle{
-      font-size:15px;
-      font-weight:900;
-      margin-bottom:12px;
-    }
-
-    .shop{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:12px 0;
-      border-top:1px solid rgba(0,0,0,.06);
-    }
-
-    .shop:first-child{
-      border-top:none;
-      padding-top:0;
-    }
-
-    .left .name{
-      font-weight:900;
-      font-size:14px;
-      margin-bottom:4px;
-    }
-
-    .left .meta{
-      font-size:12px;
-      color:#6B7280;
-      font-weight:700;
-    }
-
-    .right{
+    .heroDesc{
+      margin-top:8px;
       font-size:13px;
-      font-weight:900;
-      color:#111827;
+      line-height:1.5;
+      color:var(--muted);
+      font-weight:700;
     }
 
-    .cta{
-      margin-top:20px;
+    .actionRow{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:10px;
+      margin-top:16px;
     }
 
     .btn{
+      border:none;
+      border-radius:16px;
+      padding:14px 12px;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+    }
+
+    .btn.primary{
+      background:var(--mint);
+      color:#fff;
+      box-shadow:0 12px 24px rgba(42,193,188,.22);
+    }
+
+    .btn.secondary{
+      background:#F3F4F6;
+      color:#111827;
+      border:1px solid rgba(0,0,0,.06);
+    }
+
+    .section{
+      margin-top:14px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:var(--shadow2);
+      overflow:hidden;
+    }
+
+    .sectionHead{
+      padding:14px 14px 10px;
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .card{
+      margin:0 12px 12px;
+      background:linear-gradient(135deg, rgba(42,193,188,.10), rgba(110,211,232,.12));
+      border-radius:18px;
+      padding:14px;
+      border:1px solid rgba(42,193,188,.12);
+    }
+
+    .storeName{
+      font-size:16px;
+      font-weight:900;
+      letter-spacing:-.02em;
+    }
+
+    .meta{
+      margin-top:6px;
+      font-size:12px;
+      color:#4B5563;
+      font-weight:800;
+      line-height:1.5;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .chip{
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.06);
+      font-size:11px;
+      font-weight:900;
+    }
+
+    .menuList{
+      padding:0 12px 12px;
+      display:grid;
+      gap:10px;
+    }
+
+    .menuItem{
+      background:#fff;
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:16px;
+      padding:12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .menuLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+
+    .menuEmoji{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      background:rgba(42,193,188,.10);
+      display:grid;
+      place-items:center;
+      font-size:22px;
+      flex:0 0 auto;
+    }
+
+    .menuText{
+      min-width:0;
+    }
+
+    .menuName{
+      font-size:14px;
+      font-weight:900;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .menuSub{
+      margin-top:4px;
+      font-size:11px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .price{
+      font-size:13px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .tip{
+      margin:14px 2px 0;
+      font-size:12px;
+      color:#4B5563;
+      font-weight:800;
+      line-height:1.6;
+      text-align:center;
+    }
+
+    .bottomBar{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:10px;
+      width:min(390px, calc(100% - 18px));
+      background:#fff;
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:18px;
+      padding:10px;
+      box-shadow:var(--shadow);
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+
+    .bottomBar button{
       border:none;
       border-radius:14px;
       padding:14px 12px;
       font-size:14px;
       font-weight:900;
       cursor:pointer;
-      box-shadow:0 10px 18px rgba(0,0,0,.06);
     }
 
-    .btn.primary{
-      background:#2AC1BC;
-      color:#fff;
-    }
-
-    .btn.secondary{
-      background:#fff;
+    .bottomBar .again{
+      background:#F3F4F6;
       color:#111827;
+    }
+
+    .bottomBar .order{
+      background:#111827;
+      color:#fff;
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="top">
-      <button class="backBtn" onclick="location.href='index.html'">‹</button>
-      <div class="title">추천 메뉴</div>
+    <div class="topbar">
+      <button class="back" onclick="location.href='index.html'" aria-label="뒤로가기">‹</button>
+      <div class="title">추천 메뉴 결과</div>
+      <div class="ghost"></div>
     </div>
 
-    <div class="hero">
-      <div class="emoji" id="menuEmoji">🍗</div>
-      <div class="sub">오늘의 추천 메뉴</div>
-      <div class="menuName" id="menuName">치킨</div>
-      <div class="desc">
-        룰렛 결과를 바탕으로 추천된 메뉴예요.<br>
-        이 메뉴와 관련된 가게를 탐색해볼 수 있어요.
-      </div>
-    </div>
+    <div class="resultHero">
+      <div class="badge">룰렛 추천 완료</div>
+      <div class="heroEmoji" id="resultEmoji">🍗</div>
+      <div class="heroTitle" id="resultName">치킨</div>
+      <div class="heroDesc" id="resultDesc">오늘의 메뉴는 치킨이에요. 바삭하고 만족감 높은 메뉴로 골라봤어요.</div>
 
-    <div class="card">
-      <div class="cardTitle">추천 가게</div>
-
-      <div class="shop">
-        <div class="left">
-          <div class="name" id="shop1">오늘의 치킨집</div>
-          <div class="meta">⭐ 4.8 · 배달 25~35분</div>
-        </div>
-        <div class="right">18,000원~</div>
-      </div>
-
-      <div class="shop">
-        <div class="left">
-          <div class="name" id="shop2">바사삭 치킨</div>
-          <div class="meta">⭐ 4.7 · 배달 30~40분</div>
-        </div>
-        <div class="right">17,500원~</div>
-      </div>
-
-      <div class="shop">
-        <div class="left">
-          <div class="name" id="shop3">한입에 반한 치킨</div>
-          <div class="meta">⭐ 4.9 · 배달 20~30분</div>
-        </div>
-        <div class="right">19,000원~</div>
+      <div class="actionRow">
+        <button class="btn secondary" onclick="location.href='index.html'">다시 돌리기</button>
+        <button class="btn primary">가게 보러가기</button>
       </div>
     </div>
 
-    <div class="cta">
-      <button class="btn secondary" onclick="location.href='index.html'">다시 룰렛 돌리기</button>
-      <button class="btn primary" onclick="location.href='shop.html'">가게 보러가기</button>
+    <div class="section">
+      <div class="sectionHead">추천 가게</div>
+      <div class="card">
+        <div class="storeName" id="storeName">오늘의 추천 가게</div>
+        <div class="meta" id="storeMeta">평점 4.9 · 최소주문 14,000원 · 배달 25~35분</div>
+        <div class="chips" id="storeChips"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead">추천 메뉴 구성</div>
+      <div class="menuList" id="menuList"></div>
+    </div>
+
+    <div class="tip">
+      지금 결과는 프로토타입용 예시예요.<br>
+      선택된 메뉴에 맞춰 추천 가게와 대표 메뉴가 바뀌도록 구성했어요.
     </div>
   </div>
 
+  <div class="bottomBar">
+    <button class="again" onclick="location.href='index.html'">룰렛 다시하기</button>
+    <button class="order">이 가게 주문하기</button>
+  </div>
+
   <script>
-    const selectedName = localStorage.getItem("selectedMenuName") || "치킨";
-    const selectedEmoji = localStorage.getItem("selectedMenuEmoji") || "🍗";
+    const selectedMenuName = localStorage.getItem("selectedMenuName") || "치킨";
+    const selectedMenuEmoji = localStorage.getItem("selectedMenuEmoji") || "🍗";
 
-    document.getElementById("menuName").textContent = selectedName;
-    document.getElementById("menuEmoji").textContent = selectedEmoji;
+    const resultName = document.getElementById("resultName");
+    const resultEmoji = document.getElementById("resultEmoji");
+    const resultDesc = document.getElementById("resultDesc");
+    const storeName = document.getElementById("storeName");
+    const storeMeta = document.getElementById("storeMeta");
+    const storeChips = document.getElementById("storeChips");
+    const menuList = document.getElementById("menuList");
 
-    // 가게 이름도 메뉴에 맞춰 바꿔주기
-    document.getElementById("shop1").textContent = `오늘의 ${selectedName} 맛집`;
-    document.getElementById("shop2").textContent = `${selectedName} 한상`;
-    document.getElementById("shop3").textContent = `${selectedName} 추천가게`;
+    const menuData = {
+      "치킨": {
+        desc: "오늘의 메뉴는 치킨이에요. 바삭하고 만족감 높은 메뉴로 골라봤어요.",
+        store: "처갓집양념치킨 성수점",
+        meta: "평점 4.9 · 최소주문 14,000원 · 배달 25~35분",
+        chips: ["배민클럽", "리뷰 1,200+", "쿠폰 가능"],
+        items: [
+          { emoji:"🍗", name:"후라이드치킨", sub:"기본에 충실한 바삭한 치킨", price:"18,000원" },
+          { emoji:"🌶️", name:"양념치킨", sub:"달콤매콤한 인기 메뉴", price:"19,000원" },
+          { emoji:"🥤", name:"콜라 1.25L", sub:"치킨과 함께 곁들이기", price:"2,500원" }
+        ]
+      },
+      "피자": {
+        desc: "오늘은 피자 어때요? 여럿이 먹기 좋고 실패 확률이 낮은 메뉴예요.",
+        store: "도미노피자 왕십리점",
+        meta: "평점 4.8 · 최소주문 18,000원 · 배달 30~40분",
+        chips: ["1인 세트", "할인 가능", "리뷰 많음"],
+        items: [
+          { emoji:"🍕", name:"포테이토 피자", sub:"가장 무난하고 인기 많은 메뉴", price:"24,900원" },
+          { emoji:"🧀", name:"치즈 크러스트 추가", sub:"엣지까지 맛있게", price:"3,000원" },
+          { emoji:"🥗", name:"코울슬로", sub:"피자와 잘 어울리는 사이드", price:"2,000원" }
+        ]
+      },
+      "떡볶이": {
+        desc: "매콤한 게 땡길 땐 떡볶이가 딱이에요. 분식 조합으로 만족도가 높아요.",
+        store: "청년다방 건대점",
+        meta: "평점 4.8 · 최소주문 13,000원 · 배달 20~30분",
+        chips: ["맵기 선택", "세트 추천", "가성비"],
+        items: [
+          { emoji:"🍢", name:"차돌떡볶이", sub:"쫄깃하고 진한 국물 맛", price:"16,500원" },
+          { emoji:"🍟", name:"버터갈릭 감자튀김", sub:"인기 사이드 메뉴", price:"6,000원" },
+          { emoji:"🥤", name:"제로콜라", sub:"깔끔하게 같이", price:"2,000원" }
+        ]
+      },
+      "햄버거": {
+        desc: "간단하지만 든든하게 먹고 싶다면 햄버거가 좋아요.",
+        store: "버거킹 한양대점",
+        meta: "평점 4.7 · 최소주문 11,000원 · 배달 18~28분",
+        chips: ["세트 할인", "빠른 배달", "점심 추천"],
+        items: [
+          { emoji:"🍔", name:"와퍼 세트", sub:"클래식한 대표 메뉴", price:"10,900원" },
+          { emoji:"🍗", name:"너겟 4조각", sub:"사이드 추가 추천", price:"2,500원" },
+          { emoji:"🥤", name:"콜라", sub:"세트 음료", price:"포함" }
+        ]
+      },
+      "초밥": {
+        desc: "조금 더 깔끔하고 만족감 있게 먹고 싶다면 초밥도 좋아요.",
+        store: "스시로 성수점",
+        meta: "평점 4.9 · 최소주문 15,000원 · 배달 30~40분",
+        chips: ["신선한 재료", "인기 메뉴", "저녁 추천"],
+        items: [
+          { emoji:"🍣", name:"모둠초밥 10p", sub:"가장 기본이 되는 구성", price:"16,900원" },
+          { emoji:"🍜", name:"우동", sub:"같이 먹기 좋은 사이드", price:"4,500원" },
+          { emoji:"🥢", name:"연어초밥 4p", sub:"추가 인기 메뉴", price:"6,500원" }
+        ]
+      },
+      "국밥": {
+        desc: "든든하고 따뜻하게 먹고 싶다면 국밥이 최고예요.",
+        store: "본전돼지국밥 왕십리점",
+        meta: "평점 4.8 · 최소주문 12,000원 · 배달 25~35분",
+        chips: ["혼밥 추천", "든든한 한끼", "뜨끈한 국물"],
+        items: [
+          { emoji:"🍲", name:"돼지국밥", sub:"진한 국물과 든든한 구성", price:"10,000원" },
+          { emoji:"🥟", name:"만두", sub:"곁들이기 좋은 사이드", price:"5,000원" },
+          { emoji:"🧄", name:"양념장 추가", sub:"기호에 맞게 조절", price:"무료" }
+        ]
+      }
+    };
+
+    const current = menuData[selectedMenuName] || menuData["치킨"];
+
+    resultName.textContent = selectedMenuName;
+    resultEmoji.textContent = selectedMenuEmoji;
+    resultDesc.textContent = current.desc;
+    storeName.textContent = current.store;
+    storeMeta.textContent = current.meta;
+
+    storeChips.innerHTML = current.chips
+      .map(chip => `<span class="chip">${chip}</span>`)
+      .join("");
+
+    menuList.innerHTML = current.items.map(item => `
+      <div class="menuItem">
+        <div class="menuLeft">
+          <div class="menuEmoji">${item.emoji}</div>
+          <div class="menuText">
+            <div class="menuName">${item.name}</div>
+            <div class="menuSub">${item.sub}</div>
+          </div>
+        </div>
+        <div class="price">${item.price}</div>
+      </div>
+    `).join("");
   </script>
 </body>
 </html>
